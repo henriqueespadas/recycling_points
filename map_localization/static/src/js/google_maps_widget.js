@@ -1,10 +1,10 @@
-odoo.define('garbage_collection_points.GoogleMapsWidget', function (require) {
+odoo.define('map_localization.GoogleMapsWidget', function (require) {
     "use strict";
 
-    const FieldChar = require('web.basic_fields').FieldChar;
+    const FieldText = require('web.basic_fields').FieldText;
     const fieldRegistry = require('web.field_registry');
 
-    const GoogleMapsWidget = FieldChar.extend({
+    const GoogleMapsWidget = FieldText.extend({
         template: null,
 
         _renderReadonly: function () {
@@ -12,7 +12,7 @@ odoo.define('garbage_collection_points.GoogleMapsWidget', function (require) {
         },
 
         _renderEdit: function () {
-            this.$el.html('<input type="text" class="o_field_char o_field_widget" value="' + this._formatValue(this.value) + '"/>');
+            this.$el.html('<input type="text" class="o_field_char o_field_widget" value="' + this._formatValue(this.value) + '" style="width: 100%;"/>');
         },
     });
 

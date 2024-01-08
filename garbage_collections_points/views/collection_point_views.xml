@@ -21,7 +21,6 @@
                         <field name="email"/>
                         <field name="daily_limit"/>
                         <field name="opening_hours"/>
-                        <field name="google_maps_url" widget="google_maps"/>
                     </group>
                 </sheet>
             </form>

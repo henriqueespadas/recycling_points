@@ -21,4 +21,3 @@ class WasteCollectionPoint(models.Model):
         help="Maximum number of waste units that can be collected per day.",
     )
     opening_hours = fields.Text(string="Opening Hours")
-
