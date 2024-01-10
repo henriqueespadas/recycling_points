@@ -1,2 +1,2 @@
-# garbage_collections_points
+# garbage_collections
 Sets of modules for garbage collection points
