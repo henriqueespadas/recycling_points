@@ -1,0 +1,8 @@
+<odoo>
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Garbage Collections Assets">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css"
+                  href="/garbage_collections/static/src/css/garbage_collections_frontend.css"/>
+        </xpath>
+    </template>
+</odoo>

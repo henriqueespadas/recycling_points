@@ -4,6 +4,7 @@ from odoo import models, fields, api
 
 class GoogleMapsApi(models.AbstractModel):
     _name = "google.maps.api"
+    _description = "Google Maps API"
 
     street = fields.Char(string="Street")
     house_number = fields.Char(string="Number")

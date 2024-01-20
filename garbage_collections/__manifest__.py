@@ -8,10 +8,11 @@
     "depends": ["map_localization", "website"],
     "data": [
         "security/ir.model.access.csv",
+        "views/assets.xml",
         "views/collection_point_views.xml",
         "views/waste_type_views.xml",
         "views/menus.xml",
-        "static/src/template_garbage_collections_index.xml",
+        "static/src/xml/template_garbage_collections_index.xml",
     ],
     "installable": True,
     "application": True,

@@ -1,0 +1,31 @@
+<odoo>
+    <template id="template_garbage_collections_index" name="Garbage Collections Index">
+        <t t-call="website.layout">
+            <div class="container mt16 mb16 principal"
+                 style="background-image: url('/garbage_collections/static/src/img/img.png'); background-size: cover; background-repeat: no-repeat;">
+                <h1 class="text-center title-header">Garbage Collections and Recycling</h1>
+                <div class="row mt8 justify-content-center">
+                    <div class="col-md-3 mb8">
+                        <a href="/your-link-for-recycling-points" class="btn btn-success custom-button">Find Recycling
+                            Points
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb8">
+                        <a href="/your-link-for-schedule-pickup" class="btn btn-info custom-button">Schedule Garbage
+                            Collection
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb8">
+                        <a href="/your-link-for-recycling-guidelines" class="btn btn-warning custom-button">Recycling
+                            Guidelines
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb8">
+                        <a href="/your-link-for-report-problem" class="btn btn-danger custom-button">Report a problem
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

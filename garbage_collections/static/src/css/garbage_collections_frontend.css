@@ -1,0 +1,18 @@
+/* garbage_collections.css */
+.principal {
+    height: 1000px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.title-header {
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+.custom-button {
+    margin-bottom: 20px;
+    width: 100%;
+}

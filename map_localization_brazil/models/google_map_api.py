@@ -1,3 +1,4 @@
+from brazilcep.exceptions import BrazilCEPException
 from odoo import models, api
 import brazilcep
 
@@ -7,6 +8,7 @@ class GoogleMapsApi(models.AbstractModel):
 
     @api.onchange("zip")
     def _compute_google_maps_url(self):
+        super()._compute_google_maps_url()
         if self.zip:
             address = self._get_address_from_zip(self.zip)
             if address:
@@ -14,7 +16,10 @@ class GoogleMapsApi(models.AbstractModel):
 
     @staticmethod
     def _get_address_from_zip(zip_code):
-        return brazilcep.get_address_from_cep(zip_code)
+        try:
+            return brazilcep.get_address_from_cep(zip_code)
+        except BrazilCEPException as e:
+            return None
 
     def _update_address_fields(self, address):
         self.street = address.get("street")
