@@ -1,0 +1,17 @@
+<odoo>
+    <template id="find_recycling_points_template" name="Find Recycling Points">
+        <t t-call="website.layout">
+            <div class="seletor_find_recycling_points_template"/>
+            <div class="container mt16 mb16 principal">
+                <h1 class="text-center title-header">Find Recycling Points</h1>
+                <p class="text-center">Locate recycling centers and points near you to responsibly dispose of your waste.</p>
+                <div id="map-container" class="mt8 mb8">
+                </div>
+                <div class="row mt8 justify-content-center">
+                    <div class="col-md-12 mb8">
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
