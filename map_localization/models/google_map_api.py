@@ -1,5 +1,6 @@
 import werkzeug
 from odoo import models, fields, api
+import googlemaps
 
 
 class GoogleMapsApi(models.AbstractModel):
@@ -18,6 +19,21 @@ class GoogleMapsApi(models.AbstractModel):
         string="Google Maps URL", compute="_compute_google_maps_url"
     )
     has_res_city = fields.Boolean(compute="_compute_has_res_city", store=False)
+    latitude = fields.Float(
+        "Latitude", compute="_compute_lat_lng", readonly=True, store=True
+    )
+    longitude = fields.Float(
+        "Longitude", compute="_compute_lat_lng", readonly=True, store=True
+    )
+
+    @api.depends("street", "house_number", "district", "zip", "city_id", "state_id")
+    def _compute_lat_lng(self):
+        for record in self:
+            lat, lng = record.your_geocode_function(
+                record.street, record.zip, record.house_number
+            )
+            record.latitude = lat
+            record.longitude = lng
 
     @api.depends("city_id")
     def _compute_has_res_city(self):
@@ -48,6 +64,22 @@ class GoogleMapsApi(models.AbstractModel):
 
             url_builder = GoogleMapsUrlBuilder(api_key)
             record.google_maps_url = url_builder.build_url(address_parts)
+
+    def your_geocode_function(self, street, zip_code, house_number):
+        gmaps = googlemaps.Client(
+            key=self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
+        )
+
+        address = f"{house_number} {street}, {zip_code}"
+
+        result = gmaps.geocode(address)
+
+        if result and len(result) > 0:
+            latitude = result[0]["geometry"]["location"]["lat"]
+            longitude = result[0]["geometry"]["location"]["lng"]
+            return latitude, longitude
+        else:
+            return None, None
 
 
 class ConfigService:

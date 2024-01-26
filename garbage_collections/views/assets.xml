@@ -4,7 +4,8 @@
             <link rel="stylesheet" type="text/css"
                   href="/garbage_collections/static/src/css/garbage_collections_frontend.css"/>
             <script type="text/javascript" src="/garbage_collections/static/src/js/website_portal.js"/>
-            <script src="https://maps.googleapis.com/maps/api/js?key="/>
+            <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+            </script>
         </xpath>
     </template>
 </odoo>
