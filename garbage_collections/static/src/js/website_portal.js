@@ -27,6 +27,42 @@ odoo.define('garbage_collection.MapWidget', function (require) {
                     });
                 }
             });
+            $('#search-button').click(function () {
+                self._handleSearch();
+            });
+            $('#radius-slider').on('input change', function () {
+                $('#radius-value').text($(this).val() + ' km');
+            });
+        },
+
+        _handleSearch: function () {
+            var self = this;
+            var street = $('#street-input').val();
+            var cep = $('#cep-input').val();
+            var number = $('#number-input').val();
+            var address = street + ', ' + number + ', ' + cep;
+
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'address': address}, function (results, status) {
+                if (status === 'OK') {
+                    self.map.setCenter(results[0].geometry.location);
+                    self.map.setZoom(15);
+
+                    var radius = parseInt($('#radius-slider').val()) * 1000;
+                    var circle = new google.maps.Circle({
+                        map: self.map,
+                        radius: radius,
+                        center: results[0].geometry.location,
+                        fillColor: '#AA0000',
+                        fillOpacity: 0.35,
+                        strokeColor: '#AA0000',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2
+                    });
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
         },
 
         _loadGoogleMapsAPI: function (apiKey) {
@@ -34,7 +70,7 @@ odoo.define('garbage_collection.MapWidget', function (require) {
                 if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
                     resolve();
                 } else {
-                    ajax.loadJS('https://maps.googleapis.com/maps/api/js?key=' + apiKey)
+                    ajax.loadJS('https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places,visualization')
                         .then(resolve)
                         .guardedCatch(reject);
                 }
@@ -69,17 +105,23 @@ odoo.define('garbage_collection.MapWidget', function (require) {
                 anchor: new google.maps.Point(15, 15)
             };
 
+            var bounds = new google.maps.LatLngBounds();
+
             if (Array.isArray(collectionPoints) && collectionPoints.length > 0) {
                 collectionPoints.forEach(function (point) {
                     if (typeof point.latitude === 'number' && typeof point.longitude === 'number') {
-                        new google.maps.Marker({
-                            position: {lat: point.latitude, lng: point.longitude},
+                        var position = new google.maps.LatLng(point.latitude, point.longitude);
+                        var marker = new google.maps.Marker({
+                            position: position,
                             map: this.map,
                             title: point.name,
-                            icon: icon // Definindo o ícone personalizado
+                            icon: icon
                         });
+                        bounds.extend(position);
                     }
                 }, this);
+
+                this.map.fitBounds(bounds);
             } else {
                 console.log("No collection points data found");
             }

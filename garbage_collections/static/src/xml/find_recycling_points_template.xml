@@ -1,14 +1,35 @@
 <odoo>
     <template id="find_recycling_points_template" name="Find Recycling Points">
         <t t-call="website.layout">
-            <div class="seletor_find_recycling_points_template"/>
-            <div class="container mt16 mb16 principal">
-                <h1 class="text-center title-header">Find Recycling Points</h1>
-                <p class="text-center">Locate recycling centers and points near you to responsibly dispose of your waste.</p>
-                <div id="map-container" class="mt8 mb8">
-                </div>
-                <div class="row mt8 justify-content-center">
-                    <div class="col-md-12 mb8">
+            <div id="img-background" class="container mt16 mb16 principal"
+                 style="background-image: url('static/src/img/fundo.png');
+                        background-size: cover;
+                        background-position: center center;">
+                <div class="seletor_find_recycling_points_template"/>
+                <div class="container mt16 mb16 principal">
+                    <h1 class="text-center title-header">Find Recycling Points</h1>
+                    <p class="text-center">Locate recycling centers and points near you to responsibly dispose of your
+                        waste.
+                    </p>
+                    <div class="search-bar text-center mt4 mb4">
+                        <input type="text" id="street-input" placeholder="Enter Street"
+                               class="form-control d-inline-block"
+                               style="width: 300px;"/>
+                        <input type="text" id="cep-input" placeholder="Enter ZIP Code"
+                               class="form-control d-inline-block"
+                               style="width: 300px;"/>
+                        <input type="text" id="number-input" placeholder="Number"
+                               class="form-control d-inline-block ml2"
+                               style="width: 100px;"/>
+                        <input type="range" id="radius-slider" min="1" max="50" value="1" class="slider ml2"/>
+                        <span id="radius-value">1 km</span>
+                        <button id="search-button" class="btn btn-primary ml2">Search</button>
+                    </div>
+                    <div id="map-container" class="mt8 mb8">
+                    </div>
+                    <div class="row mt8 justify-content-center">
+                        <div class="col-md-12 mb8">
+                        </div>
                     </div>
                 </div>
             </div>

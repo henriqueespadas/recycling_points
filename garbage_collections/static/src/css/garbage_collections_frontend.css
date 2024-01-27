@@ -16,8 +16,14 @@
     margin-bottom: 20px;
     width: 100%;
 }
-#map-container {
-    height: 400px;
-    background-color: #f0f0f0;
 
+#map-container {
+    height: 600px;
+    background-color: #f0f0f0;
+    border: 2px solid #000000;
+}
+
+#radius-value {
+    font-size: 30px;
+    color: #000;
 }
