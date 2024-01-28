@@ -1,6 +1,7 @@
 from brazilcep.exceptions import BrazilCEPException
 from odoo import models, api
 import brazilcep
+import re
 
 
 class GoogleMapsApi(models.AbstractModel):
@@ -22,7 +23,9 @@ class GoogleMapsApi(models.AbstractModel):
             return None
 
     def _update_address_fields(self, address):
-        self.street = address.get("street")
+        street = address.get("street", "")
+        street = re.sub(r" - de \d+\/\d+ a \d+\/\d+$", "", street)
+        self.street = street
         self.district = address.get("district")
         city = self.env["res.city"].search([("name", "=", address.get("city"))])
         state = self.env["res.country.state"].search(

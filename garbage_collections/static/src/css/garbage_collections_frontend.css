@@ -27,3 +27,19 @@
     font-size: 30px;
     color: #000;
 }
+.search-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+#waste-type-select {
+    flex: 1 1 auto;
+    max-width: 200px;
+}
+#radius-slider {
+    width: 100px;
+}
+#radius-value, #search-button {
+    flex-shrink: 0;
+}

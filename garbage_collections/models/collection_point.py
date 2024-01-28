@@ -11,9 +11,7 @@ class WasteCollectionPoint(models.Model):
     _description = "Waste Collection Point"
 
     name = fields.Char(string="Name", required=True)
-    waste_type = fields.Many2one(
-        "waste.type", string="Waste Type", help="Type of waste collected at the point."
-    )
+    waste_type = fields.Many2many('waste.type', string="Waste Type")
     telephone = fields.Char(string="Telephone Number")
     email = fields.Char(string="Email")
     daily_limit = fields.Integer(

@@ -16,13 +16,13 @@
                         <field name="has_res_city" invisible="1"/>
                         <field name="city_id" attrs="{'invisible': [('has_res_city', '=', False)]}"/>
                         <field name="state_id"/>
-                        <field name="waste_type"/>
                         <field name="telephone"/>
                         <field name="email"/>
                         <field name="daily_limit"/>
                         <field name="opening_hours"/>
                         <field name="latitude"/>
                         <field name="longitude"/>
+                        <field name="waste_type"/>
                     </group>
                 </sheet>
             </form>

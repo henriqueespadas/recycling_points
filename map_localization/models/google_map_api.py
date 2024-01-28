@@ -29,7 +29,7 @@ class GoogleMapsApi(models.AbstractModel):
     @api.depends("street", "house_number", "district", "zip", "city_id", "state_id")
     def _compute_lat_lng(self):
         for record in self:
-            lat, lng = record.your_geocode_function(
+            lat, lng = record.geocode_function(
                 record.street, record.zip, record.house_number
             )
             record.latitude = lat
@@ -65,7 +65,7 @@ class GoogleMapsApi(models.AbstractModel):
             url_builder = GoogleMapsUrlBuilder(api_key)
             record.google_maps_url = url_builder.build_url(address_parts)
 
-    def your_geocode_function(self, street, zip_code, house_number):
+    def geocode_function(self, street, zip_code, house_number):
         gmaps = googlemaps.Client(
             key=self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
         )

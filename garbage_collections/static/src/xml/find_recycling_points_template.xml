@@ -21,6 +21,11 @@
                         <input type="text" id="number-input" placeholder="Number"
                                class="form-control d-inline-block ml2"
                                style="width: 100px;"/>
+                    </div>
+                    <div class="search-controls">
+                        <select id="waste-type-select" class="form-control">
+                            <option value="">Select Waste Type</option>
+                        </select>
                         <input type="range" id="radius-slider" min="1" max="50" value="1" class="slider ml2"/>
                         <span id="radius-value">1 km</span>
                         <button id="search-button" class="btn btn-primary ml2">Search</button>
