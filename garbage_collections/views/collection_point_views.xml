@@ -22,6 +22,7 @@
                         <field name="opening_hours"/>
                         <field name="latitude"/>
                         <field name="longitude"/>
+                        <field name="description"/>
                         <field name="waste_type"/>
                     </group>
                 </sheet>
@@ -35,7 +36,7 @@
         <field name="arch" type="xml">
             <tree string="Collection Points">
                 <field name="name"/>
-                <field name="waste_type"/>
+                <field name="waste_type" widget="many2many_tags"/>
             </tree>
         </field>
     </record>

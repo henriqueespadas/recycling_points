@@ -1,4 +1,4 @@
-/* garbage_collections.css */
+
 .principal {
     height: 1000px;
     background-size: cover;
@@ -27,19 +27,76 @@
     font-size: 30px;
     color: #000;
 }
+
 .search-controls {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 20px;
 }
+
 #waste-type-select {
     flex: 1 1 auto;
     max-width: 200px;
 }
+
 #radius-slider {
     width: 100px;
 }
-#radius-value, #search-button {
+
+#radius-value,
+#search-button {
     flex-shrink: 0;
+}
+
+.gc-info-window-content h4 {
+    color: crimson;
+    margin-bottom: 10px;
+}
+
+.gc-info-window-content .address,
+.gc-info-window-content .opening-hours,
+.gc-info-window-content .telephone,
+.gc-info-window-content .waste-type,
+.gc-info-window-content .description {
+    margin-bottom: 10px;
+}
+
+.gc-info-window-content .highlight {
+    color: crimson;
+}
+
+.gc-info-window-content .gc-go-now-btn {
+    background-color: yellow;
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.gc-info-window-content .gc-info-btn {
+    background-color: transparent;
+    border: none;
+    color: crimson;
+    padding: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    outline: none;
+}
+
+.gc-info-window-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.gc-info-btn {
+    background-color: transparent;
+    border: none;
+    color: crimson;
+    padding: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    outline: none;
 }

@@ -1,4 +1,4 @@
-odoo.define('garbage_collection.MapWidget', function (require) {
+odoo.define('garbage_collections.MapWidget', function (require) {
     'use strict';
 
     var publicWidget = require('web.public.widget');
@@ -136,7 +136,7 @@ odoo.define('garbage_collection.MapWidget', function (require) {
                 method: 'search_read',
                 args: [],
                 kwargs: {
-                    fields: ['street', 'house_number', 'zip', 'latitude', 'longitude', 'waste_type', 'name', 'opening_hours', 'district', 'telephone'],
+                    fields: ['street', 'house_number', 'zip', 'latitude', 'longitude', 'waste_type', 'name', 'opening_hours', 'district', 'telephone', 'description'],
                     domain: domain,
                     context: session.user_context,
                 }
@@ -160,6 +160,25 @@ odoo.define('garbage_collection.MapWidget', function (require) {
             var bounds = new google.maps.LatLngBounds();
             var pointsAdded = 0;
 
+            function createInfoWindowContent(point, wasteTypeText, isAdditionalContent = false) {
+                if (isAdditionalContent) {
+                    return 'Our database is the result of a collaboration between private initiatives, the public sector and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.';
+                } else {
+                    var googleMapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(point.latitude + ',' + point.longitude);
+                    return `
+            <div class="gc-info-window-content">
+                <h4><strong><u>${point.name}</u></strong></h4>
+                <div class="address">${point.street}, ${point.house_number}, ${point.district}, ${point.zip}</div>
+                <div class="opening-hours"><strong class="highlight">Opening Hours:</strong> <br>${point.opening_hours}</div>
+                <div class="telephone"><strong class="highlight">Tel:</strong> ${point.telephone}</div>
+                <div class="waste-type"><strong class="highlight">What do we receive:</strong> <br>${wasteTypeText}</div>
+                <div class="description">${point.description}</div>
+                <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">🚘 Ir Agora</a>
+                <button class="gc-info-btn">i</button>
+            </div>`;
+                }
+            }
+
             collectionPoints.forEach(function (point) {
                 var position = new google.maps.LatLng(point.latitude, point.longitude);
                 var marker = new google.maps.Marker({
@@ -170,32 +189,31 @@ odoo.define('garbage_collection.MapWidget', function (require) {
                 });
 
                 marker.addListener('click', function () {
-                    var wasteTypeIds = point.waste_type;
+                    var wasteTypeIds = point.waste_type.map(function (type) {
+                        return type[0];
+                    });
+                    self.fetchWasteTypeNames(wasteTypeIds).then(function (wasteTypeNames) {
+                        var wasteTypeText = wasteTypeNames.map(function (type) {
+                            return type.name;
+                        }).join(', ');
+                        var contentString = createInfoWindowContent(point, wasteTypeText);
+                        var infoWindow = new google.maps.InfoWindow({content: contentString});
 
-                    console.log("Waste type IDs:", wasteTypeIds);
+                        infoWindow.open(self.map, marker);
 
-                    if (wasteTypeIds.length > 0) {
-                        self.fetchWasteTypeNames(wasteTypeIds).then(function (wasteTypeNames) {
-                            var wasteTypeText = wasteTypeNames.map(function (type) {
-                                return type.name;
-                            }).join(', ');
-
-                            var infoWindowContent = '<div><h2><strong><u>' + point.name + '</u></strong></h2>' +
-                                point.street + ', ' + point.house_number + ', ' + point.district + ', ' + point.zip + '<br><br>' +
-                                'Opening Hours: ' + '<br><strong>' + point.opening_hours + '</strong></div>' +
-                                '<br><br>' + 'Tel: <strong>' + point.telephone + '</strong><br><br>' +
-                                'What do we receive? <br><strong>' + wasteTypeText + '</strong></div>';
-
-                            var infoWindow = new google.maps.InfoWindow({
-                                content: infoWindowContent
-                            });
-                            infoWindow.open(self.map, marker);
-                        }).catch(function (error) {
-                            console.error("Error fetching waste type names:", error);
+                        google.maps.event.addListener(infoWindow, 'domready', function () {
+                            var infoButton = document.querySelector('.gc-info-btn');
+                            if (infoButton) {
+                                infoButton.addEventListener('click', function () {
+                                    var isAdditionalContent = this.getAttribute('data-state') === 'additional';
+                                    infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, !isAdditionalContent));
+                                    this.setAttribute('data-state', isAdditionalContent ? 'original' : 'additional');
+                                });
+                            }
                         });
-                    } else {
-                        console.log("No waste type ids found for point:", point);
-                    }
+                    }).catch(function (error) {
+                        console.error("Error fetching waste type names:", error);
+                    });
                 });
 
                 bounds.extend(position);
@@ -212,11 +230,6 @@ odoo.define('garbage_collection.MapWidget', function (require) {
                 this.map.setCenter(centerLocation);
                 this.map.setZoom(15);
             }
-        },
-
-        _isPointInCircle: function (point, center, radius) {
-            var distance = google.maps.geometry.spherical.computeDistanceBetween(point, center);
-            return distance <= radius;
         },
 
     });
