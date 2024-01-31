@@ -162,7 +162,15 @@ odoo.define('garbage_collections.MapWidget', function (require) {
 
             function createInfoWindowContent(point, wasteTypeText, isAdditionalContent = false) {
                 if (isAdditionalContent) {
-                    return 'Our database is the result of a collaboration between private initiatives, the public sector and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.';
+                    return `
+            <div class="additional-info">
+                <h3 class="additional-title"><u>Collection Points</u></h3>
+                Our database is the result of a collaboration between private initiatives, the public sector and third 
+                sector organizations. Updates may take some time to process. We are committed to continually working to 
+                keep the platform up to date. Click the button below and learn about the initiative and our partners.
+                <br><br>
+                <button class="gc-back-btn">← Back</button>
+            </div>`;
                 } else {
                     var googleMapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(point.latitude + ',' + point.longitude);
                     return `
@@ -174,7 +182,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 <div class="waste-type"><strong class="highlight">What do we receive:</strong> <br>${wasteTypeText}</div>
                 <div class="description">${point.description}</div>
                 <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">🚘 Ir Agora</a>
-                <button class="gc-info-btn">i</button>
+                <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
             </div>`;
                 }
             }
@@ -203,11 +211,16 @@ odoo.define('garbage_collections.MapWidget', function (require) {
 
                         google.maps.event.addListener(infoWindow, 'domready', function () {
                             var infoButton = document.querySelector('.gc-info-btn');
+                            var backButton = document.querySelector('.gc-back-btn');
+
                             if (infoButton) {
                                 infoButton.addEventListener('click', function () {
-                                    var isAdditionalContent = this.getAttribute('data-state') === 'additional';
-                                    infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, !isAdditionalContent));
-                                    this.setAttribute('data-state', isAdditionalContent ? 'original' : 'additional');
+                                    infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, true));
+                                });
+                            }
+                            if (backButton) {
+                                backButton.addEventListener('click', function () {
+                                    infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, false));
                                 });
                             }
                         });
