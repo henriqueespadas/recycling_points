@@ -29,11 +29,30 @@
                         <input type="range" id="radius-slider" min="1" max="50" value="1" class="slider ml2"/>
                         <span id="radius-value">1 km</span>
                         <button id="search-button" class="btn btn-primary ml2">Search</button>
+                        <button id="listPointsButton" class="btn btn-primary ml2">List Collection Points</button>
                     </div>
                     <div id="map-container" class="mt8 mb8">
                     </div>
                     <div class="row mt8 justify-content-center">
                         <div class="col-md-12 mb8">
+                        </div>
+                    </div>
+                    <div class="modal fade" id="collectionPointsModal" tabindex="-1" role="dialog"
+                         aria-labelledby="modalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel">Pontos de Coleta</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

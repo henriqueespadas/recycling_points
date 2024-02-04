@@ -26,6 +26,10 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             var self = this;
             this._super.apply(this, arguments);
 
+            $('#listPointsButton').click(function () {
+                self._relistCollectionPoints();
+            });
+
             session.rpc('/web/dataset/call_kw', {
                 model: 'ir.config_parameter',
                 method: 'get_param',
@@ -105,7 +109,10 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                         strokeWeight: 2
                     });
 
+                    self.lastSearchParams = {location: location, wasteTypeId: wasteTypeId};
+
                     self._fetchCollectionPoints(wasteTypeId).then(function (filteredPoints) {
+                        self.lastSearchResults = filteredPoints;
                         self._initMap(filteredPoints, location);
                     });
                 } else {
@@ -113,6 +120,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 }
             });
         },
+
 
         _loadGoogleMapsAPI: function (apiKey) {
             return new Promise(function (resolve, reject) {
@@ -188,48 +196,50 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             }
 
             collectionPoints.forEach(function (point) {
-                var position = new google.maps.LatLng(point.latitude, point.longitude);
-                var marker = new google.maps.Marker({
-                    position: position,
-                    map: self.map,
-                    title: point.name,
-                    icon: icon
-                });
+                var pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
 
-                marker.addListener('click', function () {
-                    var wasteTypeIds = point.waste_type.map(function (type) {
-                        return type[0];
+                if (!self.currentCircle || google.maps.geometry.spherical.computeDistanceBetween(pointLocation, self.currentCircle.getCenter()) <= self.currentCircle.getRadius()) {
+                    var marker = new google.maps.Marker({
+                        position: pointLocation,
+                        map: self.map,
+                        title: point.name,
+                        icon: icon
                     });
-                    self.fetchWasteTypeNames(wasteTypeIds).then(function (wasteTypeNames) {
-                        var wasteTypeText = wasteTypeNames.map(function (type) {
-                            return type.name;
-                        }).join(', ');
-                        var contentString = createInfoWindowContent(point, wasteTypeText);
-                        var infoWindow = new google.maps.InfoWindow({content: contentString});
 
-                        infoWindow.open(self.map, marker);
-
-                        google.maps.event.addListener(infoWindow, 'domready', function () {
-                            var infoButton = document.querySelector('.gc-info-btn');
-                            var backButton = document.querySelector('.gc-back-btn');
-
-                            if (infoButton) {
-                                infoButton.addEventListener('click', function () {
-                                    infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, true));
-                                });
-                            }
-                            if (backButton) {
-                                backButton.addEventListener('click', function () {
-                                    infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, false));
-                                });
-                            }
+                    marker.addListener('click', function () {
+                        var wasteTypeIds = point.waste_type.map(function (type) {
+                            return type[0];
                         });
-                    }).catch(function (error) {
-                        console.error("Error fetching waste type names:", error);
-                    });
-                });
+                        self.fetchWasteTypeNames(wasteTypeIds).then(function (wasteTypeNames) {
+                            var wasteTypeText = wasteTypeNames.map(function (type) {
+                                return type.name;
+                            }).join(', ');
+                            var contentString = createInfoWindowContent(point, wasteTypeText);
+                            var infoWindow = new google.maps.InfoWindow({content: contentString});
 
-                bounds.extend(position);
+                            infoWindow.open(self.map, marker);
+
+                            google.maps.event.addListener(infoWindow, 'domready', function () {
+                                var infoButton = document.querySelector('.gc-info-btn');
+                                var backButton = document.querySelector('.gc-back-btn');
+
+                                if (infoButton) {
+                                    infoButton.addEventListener('click', function () {
+                                        infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, true));
+                                    });
+                                }
+                                if (backButton) {
+                                    backButton.addEventListener('click', function () {
+                                        infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, false));
+                                    });
+                                }
+                            });
+                        }).catch(function (error) {
+                            console.error("Error fetching waste type names:", error);
+                        });
+                    });
+                }
+                bounds.extend(pointLocation);
             });
 
             if (self.currentCircle) {
@@ -244,8 +254,32 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 this.map.setZoom(15);
             }
         },
+        _relistCollectionPoints: function () {
+            var self = this;
+            if (self.lastSearchParams && self.currentCircle) {
+                self._fetchCollectionPoints(self.lastSearchParams.wasteTypeId).then(function (filteredPoints) {
+                    var filteredPointsWithinCircle = filteredPoints.filter(function (point) {
+                        var pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
+                        return google.maps.geometry.spherical.computeDistanceBetween(pointLocation, self.currentCircle.getCenter()) <= self.currentCircle.getRadius();
+                    });
+
+                    var modalBody = $('#collectionPointsModal').find('.modal-body');
+                    modalBody.empty();
+
+                    filteredPointsWithinCircle.forEach(function (point) {
+                        modalBody.append(`<p>Name: ${point.name}<br>Address: ${point.street}, ${point.house_number}<br>Description: ${point.description}</p><hr>`);
+                    });
+
+                    $('#collectionPointsModal').modal('show');
+                });
+            } else {
+                alert('No previous searches found or circle not defined..');
+            }
+        },
+
 
     });
+
 
     publicWidget.registry.PortalMapWidget = MapWidget;
 
