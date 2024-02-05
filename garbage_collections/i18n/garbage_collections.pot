@@ -1,0 +1,373 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* garbage_collections
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-04 02:12+0000\n"
+"PO-Revision-Date: 2024-02-04 02:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#, python-format
+msgid "1 km"
+msgstr ""
+
+#. module: garbage_collections
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+msgid ""
+"<select id=\"waste-type-select\" class=\"form-control\">\n"
+"                            <option value=\"\">Select Waste Type</option>\n"
+"                        </select>"
+msgstr ""
+
+#. module: garbage_collections
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+msgid "<span id=\"radius-value\">1 km</span>"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__additional_info
+msgid "Additional Info"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__city_id
+msgid "City"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Close"
+msgstr ""
+
+#. module: garbage_collections
+#: model_terms:ir.ui.view,arch_db:garbage_collections.collection_point_form
+msgid "Collection Point"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.actions.act_window,name:garbage_collections.action_collection_point
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__collection_point_ids
+#: model:ir.ui.menu,name:garbage_collections.menu_garbage_collection_points
+#: model:ir.ui.menu,name:garbage_collections.menu_garbage_collection_points_collection_point
+#: model_terms:ir.ui.view,arch_db:garbage_collections.collection_point_tree
+msgid "Collection Points"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,help:garbage_collections.field_waste_type__collection_point_ids
+msgid "Collection points that collect this type of waste."
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__country_id
+msgid "Country"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__create_uid
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__create_date
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__description
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__description
+msgid "Description"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__display_name
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__district
+msgid "District"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__email
+msgid "Email"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Enter Street"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Enter ZIP Code"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/js/website_portal.js:0
+#, python-format
+msgid "Error fetching waste type names:"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Fechar"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/template_garbage_collections_index.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.template_garbage_collections_index
+#, python-format
+msgid ""
+"Find\n"
+"                            Recycling\n"
+"                            Points"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Find Recycling Points"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Garbage Collection"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/template_garbage_collections_index.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.template_garbage_collections_index
+#, python-format
+msgid "Garbage Collections and Recycling"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/js/website_portal.js:0
+#, python-format
+msgid "Geocode was not successful for the following reason: "
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__google_maps_url
+msgid "Google Maps URL"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__has_res_city
+msgid "Has Res City"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__id
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__id
+msgid "ID"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point____last_update
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__write_uid
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__write_date
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__latitude
+msgid "Latitude"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "List Collection Points"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid ""
+"Locate recycling centers and points near you to responsibly dispose of your\n"
+"                        waste."
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/js/website_portal.js:0
+#, python-format
+msgid "Location Found"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__longitude
+msgid "Longitude"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,help:garbage_collections.field_collection_point__daily_limit
+msgid "Maximum number of waste units that can be collected per day."
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__name
+#: model:ir.model.fields,field_description:garbage_collections.field_waste_type__name
+msgid "Name"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/js/website_portal.js:0
+#, python-format
+msgid "No previous searches found or circle not defined.."
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__house_number
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Number"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__opening_hours
+msgid "Opening Hours"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__zip
+msgid "Postal Code"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/template_garbage_collections_index.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.template_garbage_collections_index
+#, python-format
+msgid ""
+"Recycling\n"
+"                            Guidelines"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/template_garbage_collections_index.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.template_garbage_collections_index
+#, python-format
+msgid "Report a problem"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/template_garbage_collections_index.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.template_garbage_collections_index
+#, python-format
+msgid ""
+"Schedule Garbage\n"
+"                            Collection"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
+#, python-format
+msgid "Search"
+msgstr ""
+
+#. module: garbage_collections
+#. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#, python-format
+msgid "Select Waste Type"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__state_id
+msgid "State"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__street
+msgid "Street"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__telephone
+msgid "Telephone Number"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model,name:garbage_collections.model_collection_point
+msgid "Waste Collection Point"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model,name:garbage_collections.model_waste_type
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__waste_type
+#: model_terms:ir.ui.view,arch_db:garbage_collections.waste_type_form
+msgid "Waste Type"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.actions.act_window,name:garbage_collections.action_waste_type
+#: model:ir.ui.menu,name:garbage_collections.menu_garbage_collection_points_waste_type
+#: model_terms:ir.ui.view,arch_db:garbage_collections.waste_type_tree
+msgid "Waste Types"
+msgstr ""
+
+#. module: garbage_collections
+#: model:ir.model.fields,field_description:garbage_collections.field_collection_point__daily_limit
+msgid "m³ Daily Limit"
+msgstr ""

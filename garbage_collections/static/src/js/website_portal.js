@@ -4,6 +4,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
     var publicWidget = require('web.public.widget');
     var session = require('web.session');
     var ajax = require('web.ajax');
+    var _t = require('web.core')._t;
 
     var MapWidget = publicWidget.Widget.extend({
         selector: '.seletor_find_recycling_points_template',
@@ -91,7 +92,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                     self.searchMarker = new google.maps.Marker({
                         position: location,
                         map: self.map,
-                        title: 'Localização Encontrada'
+                        title: _t('Location Found')
                     });
 
                     if (self.currentCircle) {
@@ -116,7 +117,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                         self._initMap(filteredPoints, location);
                     });
                 } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
+                    alert(_t('Geocode was not successful for the following reason: ') + status);
                 }
             });
         },
@@ -171,27 +172,25 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             function createInfoWindowContent(point, wasteTypeText, isAdditionalContent = false) {
                 if (isAdditionalContent) {
                     return `
-            <div class="additional-info">
-                <h3 class="additional-title"><u>Collection Points</u></h3>
-                Our database is the result of a collaboration between private initiatives, the public sector and third 
-                sector organizations. Updates may take some time to process. We are committed to continually working to 
-                keep the platform up to date. Click the button below and learn about the initiative and our partners.
-                <br><br>
-                <button class="gc-back-btn">← Back</button>
-            </div>`;
+<div class="additional-info">
+    <h3 class="additional-title"><u>${_t("Collection Points")}</u></h3>
+    ${_t("Our database is the result of a collaboration between private initiatives, the public sector and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.")}
+    <br><br>
+    <button class="gc-back-btn">${_t("← Back")}</button>
+</div>`;
                 } else {
                     var googleMapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(point.latitude + ',' + point.longitude);
                     return `
-            <div class="gc-info-window-content">
-                <h4><strong><u>${point.name}</u></strong></h4>
-                <div class="address">${point.street}, ${point.house_number}, ${point.district}, ${point.zip}</div>
-                <div class="opening-hours"><strong class="highlight">Opening Hours:</strong> <br>${point.opening_hours}</div>
-                <div class="telephone"><strong class="highlight">Tel:</strong> ${point.telephone}</div>
-                <div class="waste-type"><strong class="highlight">What do we receive:</strong> <br>${wasteTypeText}</div>
-                <div class="description">${point.description}</div>
-                <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">🚘 Ir Agora</a>
-                <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
-            </div>`;
+<div class="gc-info-window-content">
+    <h4><strong><u>${point.name}</u></strong></h4>
+    <div class="address">${point.street}, ${point.house_number}, ${point.district}, ${point.zip}</div>
+    <div class="opening-hours"><strong class="highlight">${_t("Opening Hours:")}</strong> <br>${point.opening_hours}</div>
+    <div class="telephone"><strong class="highlight">${_t("Tel:")}</strong> ${point.telephone}</div>
+    <div class="waste-type"><strong class="highlight">${_t("What do we receive:")}</strong> <br>${wasteTypeText}</div>
+    <div class="description">${point.description}</div>
+    <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">${_t("🚘 Go now")}</a>
+    <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
+</div>`;
                 }
             }
 
@@ -235,7 +234,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                                 }
                             });
                         }).catch(function (error) {
-                            console.error("Error fetching waste type names:", error);
+                            console.error(_t("Error fetching waste type names:", error));
                         });
                     });
                 }
@@ -273,7 +272,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                     $('#collectionPointsModal').modal('show');
                 });
             } else {
-                alert('No previous searches found or circle not defined..');
+                alert(_t('No previous searches found or circle not defined..'));
             }
         },
 
