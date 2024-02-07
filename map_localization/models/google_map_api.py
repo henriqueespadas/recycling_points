@@ -2,6 +2,11 @@ import werkzeug
 from odoo import models, fields, api
 import googlemaps
 
+from odoo.addons.map_localization.services.google_maps_url_builder import (
+    GoogleMapsUrlBuilder,
+)
+from odoo.addons.map_localization.services.config_service import ConfigService
+
 
 class GoogleMapsApi(models.AbstractModel):
     _name = "google.maps.api"
@@ -44,7 +49,7 @@ class GoogleMapsApi(models.AbstractModel):
     @api.depends("street", "house_number", "district", "zip", "city_id", "state_id")
     def _compute_google_maps_url(self):
         for record in self:
-            config_service = ConfigService(record.env)
+            config_service = ConfigService()
             api_key = config_service.get_google_maps_api_key()
             if not api_key:
                 record.google_maps_url = False
@@ -80,26 +85,3 @@ class GoogleMapsApi(models.AbstractModel):
             return latitude, longitude
         else:
             return None, None
-
-
-class ConfigService:
-    def __init__(self, env):
-        self.env = env
-
-    def get_google_maps_api_key(self):
-        return self.env["ir.config_parameter"].sudo().get_param("google_maps_api_key")
-
-
-class GoogleMapsUrlBuilder:
-    def __init__(self, api_key):
-        self.api_key = api_key
-
-    def build_url(self, address_parts):
-        BASE_URL = "https://www.google.com/maps/embed/v1/place"
-        address_full = ", ".join(filter(None, address_parts))
-
-        if not address_full.strip():
-            return False
-
-        query = werkzeug.urls.url_encode({"key": self.api_key, "q": address_full})
-        return f"{BASE_URL}?{query}"

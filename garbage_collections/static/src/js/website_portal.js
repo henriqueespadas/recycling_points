@@ -170,29 +170,30 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             var pointsAdded = 0;
 
             function createInfoWindowContent(point, wasteTypeText, isAdditionalContent = false) {
-                if (isAdditionalContent) {
-                    return `
-<div class="additional-info">
-    <h3 class="additional-title"><u>${_t("Collection Points")}</u></h3>
-    ${_t("Our database is the result of a collaboration between private initiatives, the public sector and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.")}
-    <br><br>
-    <button class="gc-back-btn">${_t("← Back")}</button>
-</div>`;
-                } else {
-                    var googleMapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(point.latitude + ',' + point.longitude);
-                    return `
-<div class="gc-info-window-content">
-    <h4><strong><u>${point.name}</u></strong></h4>
-    <div class="address">${point.street}, ${point.house_number}, ${point.district}, ${point.zip}</div>
-    <div class="opening-hours"><strong class="highlight">${_t("Opening Hours:")}</strong> <br>${point.opening_hours}</div>
-    <div class="telephone"><strong class="highlight">${_t("Tel:")}</strong> ${point.telephone}</div>
-    <div class="waste-type"><strong class="highlight">${_t("What do we receive:")}</strong> <br>${wasteTypeText}</div>
-    <div class="description">${point.description}</div>
-    <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">${_t("🚘 Go now")}</a>
-    <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
-</div>`;
-                }
-            }
+    // Certifique-se de que todos os textos estão envolvidos por _t para tradução
+    if (isAdditionalContent) {
+        return `
+            <div class="additional-info">
+                <h3 class="additional-title"><u>${_t("Collection Points")}</u></h3>
+                ${_t("Our database is the result of a collaboration between private initiatives, the public sector, and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.")}
+                <br><br>
+                <button class="gc-back-btn">${_t("← Back")}</button>
+            </div>`;
+    } else {
+        var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(point.latitude + ',' + point.longitude)}`;
+        return `
+            <div class="gc-info-window-content">
+                <h4><strong><u>${_t(point.name)}</u></strong></h4>
+                <div class="address">${_t(point.street)}, ${point.house_number}, ${_t(point.district)}, ${point.zip}</div>
+                <div class="opening-hours"><strong class="highlight">${_t("Opening Hours:")}</strong> <br>${_t(point.opening_hours)}</div>
+                <div class="telephone"><strong class="highlight">${_t("Tel:")}</strong> ${point.telephone}</div>
+                <div class="waste-type"><strong class="highlight">${_t("What do we receive:")}</strong> <br>${_t(wasteTypeText)}</div>
+                <div class="description">${_t(point.description)}</div>
+                <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">${_t("🚘 Go now")}</a>
+                <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
+            </div>`;
+    }
+}
 
             collectionPoints.forEach(function (point) {
                 var pointLocation = new google.maps.LatLng(point.latitude, point.longitude);

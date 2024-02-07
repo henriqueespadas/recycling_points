@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-04 02:12+0000\n"
-"PO-Revision-Date: 2024-02-04 02:12+0000\n"
+"POT-Creation-Date: 2024-02-06 23:44+0000\n"
+"PO-Revision-Date: 2024-02-06 23:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -47,6 +47,7 @@ msgstr ""
 
 #. module: garbage_collections
 #. openerp-web
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
 #: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
 #: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
 #, python-format
@@ -132,14 +133,6 @@ msgstr ""
 #: code:addons/garbage_collections/static/src/js/website_portal.js:0
 #, python-format
 msgid "Error fetching waste type names:"
-msgstr ""
-
-#. module: garbage_collections
-#. openerp-web
-#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
-#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
-#, python-format
-msgid "Fechar"
 msgstr ""
 
 #. module: garbage_collections

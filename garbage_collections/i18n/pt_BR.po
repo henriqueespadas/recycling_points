@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-04 02:12+0000\n"
-"PO-Revision-Date: 2024-02-04 02:12+0000\n"
+"POT-Creation-Date: 2024-02-06 23:35+0000\n"
+"PO-Revision-Date: 2024-02-06 23:35+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,9 +51,10 @@ msgstr "Cidade"
 #. module: garbage_collections
 #. openerp-web
 #: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
+#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
 #: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
 #, python-format
-msgid "Fechar"
+msgid "Close"
 msgstr "Fechar"
 
 #. module: garbage_collections
@@ -136,14 +137,6 @@ msgstr "Digite o CEP"
 #, python-format
 msgid "Error fetching waste type names:"
 msgstr "Erro ao buscar nomes de tipos de resíduos:"
-
-#. module: garbage_collections
-#. openerp-web
-#: code:addons/garbage_collections/static/src/xml/find_recycling_points_template.xml:0
-#: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
-#, python-format
-msgid "Close"
-msgstr "Fechar"
 
 #. module: garbage_collections
 #. openerp-web
@@ -264,7 +257,8 @@ msgstr ""
 #. module: garbage_collections
 #: model:ir.model.fields,help:garbage_collections.field_collection_point__daily_limit
 msgid "Maximum number of waste units that can be collected per day."
-msgstr "Número máximo de unidades de resíduos que podem ser coletadas por dia."
+msgstr ""
+"Número máximo de unidades de resíduos que podem ser coletadas por dia."
 
 #. module: garbage_collections
 #: model:ir.model.fields,field_description:garbage_collections.field_collection_point__name
