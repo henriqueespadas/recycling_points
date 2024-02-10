@@ -10,6 +10,15 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         selector: '.seletor_find_recycling_points_template',
         xmlDependencies: ['/garbage_collection/static/src/xml/find_recycling_points_template.xml'],
 
+        initializeSelectors: function () {
+            this.$listPointsButton = $('#listPointsButton');
+            this.$searchButton = $('#search-button');
+            this.$radiusSlider = $('#radius-slider');
+            this.$radiusValue = $('#radius-value');
+            this.$wasteTypeSelect = $('#waste-type-select');
+            this.$modalBody = $('#collectionPointsModal .modal-body');
+        },
+
         fetchWasteTypeNames: function (ids) {
             return session.rpc('/web/dataset/call_kw', {
                 model: 'waste.type',
@@ -23,29 +32,17 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             });
         },
 
-        start: function () {
-            var self = this;
-            this._super.apply(this, arguments);
-
-            $('#listPointsButton').click(function () {
-                self._relistCollectionPoints();
-            });
-
-            session.rpc('/web/dataset/call_kw', {
+        _fetchGoogleMapsApiKey: function () {
+            return session.rpc('/web/dataset/call_kw', {
                 model: 'ir.config_parameter',
                 method: 'get_param',
                 args: ['google_maps_api_key_garbage_collections'],
                 kwargs: {},
-            }).then(function (apiKey) {
-                if (apiKey) {
-                    self._loadGoogleMapsAPI(apiKey).then(function () {
-                        self._fetchCollectionPoints().then(function (collectionPoints) {
-                            self._initMap(collectionPoints);
-                        });
-                    });
-                }
             });
-            session.rpc('/web/dataset/call_kw', {
+        },
+
+        _fetchWasteTypes: function () {
+            return session.rpc('/web/dataset/call_kw', {
                 model: 'waste.type',
                 method: 'search_read',
                 args: [],
@@ -54,72 +51,112 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                     domain: [],
                     context: session.user_context,
                 }
-            }).then(function (wasteTypes) {
+            });
+        },
+
+
+        start: function () {
+            var self = this;
+            this._super.apply(this, arguments);
+            this.initializeSelectors();
+            this._bindEventHandlers();
+
+            this._fetchGoogleMapsApiKey().then(function (apiKey) {
+                if (apiKey) {
+                    self._loadGoogleMapsAPI(apiKey).then(function () {
+                        self._fetchCollectionPoints().then(function (collectionPoints) {
+                            self._initMap(collectionPoints);
+                        });
+                    });
+                }
+            });
+
+            this._fetchWasteTypes().then(function (wasteTypes) {
                 wasteTypes.forEach(function (wt) {
-                    $('#waste-type-select').append($('<option>', {
+                    self.$wasteTypeSelect.append($('<option>', {
                         value: wt.id,
                         text: wt.name
                     }));
                 });
             });
-            $('#search-button').click(function () {
+        },
+
+        _bindEventHandlers: function () {
+            var self = this;
+            this.$listPointsButton.click(function () {
+                self._relistCollectionPoints();
+            });
+
+            this.$searchButton.click(function () {
                 self._handleSearch();
             });
-            $('#radius-slider').on('input change', function () {
-                $('#radius-value').text($(this).val() + ' km');
+
+            this.$radiusSlider.on('input change', function () {
+                self.$radiusValue.text($(this).val() + ' km');
+            });
+        },
+
+        geocodeAddress: function (address) {
+            return new Promise((resolve, reject) => {
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({'address': address}, function (results, status) {
+                    if (status === 'OK') {
+                        resolve(results[0].geometry.location);
+                    } else {
+                        reject(status);
+                    }
+                });
             });
         },
 
         currentCircle: null,
-        _handleSearch: function () {
-            var self = this;
-            var street = $('#street-input').val();
-            var cep = $('#cep-input').val();
-            var number = $('#number-input').val();
-            var address = street + ', ' + number + ', ' + cep;
-            var wasteTypeId = $('#waste-type-select').val();
+        _handleSearch: async function () {
+            try {
+                var self = this;
+                var street = $('#street-input').val();
+                var cep = $('#cep-input').val();
+                var number = $('#number-input').val();
+                var address = `${street}, ${number}, ${cep}`;
+                var wasteTypeId = $('#waste-type-select').val();
 
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({'address': address}, function (results, status) {
-                if (status === 'OK') {
-                    var location = results[0].geometry.location;
-                    self.map.setCenter(location);
-                    self.map.setZoom(15);
+                var location = await this.geocodeAddress(address);
 
-                    if (self.searchMarker) {
-                        self.searchMarker.setMap(null);
-                    }
-                    self.searchMarker = new google.maps.Marker({
-                        position: location,
-                        map: self.map,
-                        title: _t('Location Found')
-                    });
+                self.map.setCenter(location);
+                self.map.setZoom(15);
 
-                    if (self.currentCircle) {
-                        self.currentCircle.setMap(null);
-                    }
-                    var radius = parseInt($('#radius-slider').val()) * 1000;
-                    self.currentCircle = new google.maps.Circle({
-                        map: self.map,
-                        radius: radius,
-                        center: location,
-                        fillColor: '#AA0000',
-                        fillOpacity: 0.35,
-                        strokeColor: '#AA0000',
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2
-                    });
-
-                    self.lastSearchParams = {location: location, wasteTypeId: wasteTypeId};
-
-                    self._fetchCollectionPoints(wasteTypeId).then(function (filteredPoints) {
-                        self.lastSearchResults = filteredPoints;
-                        self._initMap(filteredPoints, location);
-                    });
-                } else {
-                    alert(_t('Geocode was not successful for the following reason: ') + status);
+                if (self.searchMarker) {
+                    self.searchMarker.setMap(null);
                 }
-            });
+                self.searchMarker = new google.maps.Marker({
+                    position: location,
+                    map: self.map,
+                    title: _t('Location Found')
+                });
+
+                if (self.currentCircle) {
+                    self.currentCircle.setMap(null);
+                }
+                var radius = parseInt($('#radius-slider').val()) * 1000;
+                self.currentCircle = new google.maps.Circle({
+                    map: self.map,
+                    radius: radius,
+                    center: location,
+                    fillColor: '#AA0000',
+                    fillOpacity: 0.35,
+                    strokeColor: '#AA0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2
+                });
+
+                self.lastSearchParams = {location: location, wasteTypeId: wasteTypeId};
+
+                var filteredPoints = await self._fetchCollectionPoints(wasteTypeId);
+                self.lastSearchResults = filteredPoints;
+                self._initMap(filteredPoints, location);
+            } catch (error) {
+                console.error("Geocode or fetching collection points failed:", error);
+                alert(_t('Geocode was not successful for the following reason: ') + error);
+            }
         },
 
 
@@ -170,18 +207,17 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             var pointsAdded = 0;
 
             function createInfoWindowContent(point, wasteTypeText, isAdditionalContent = false) {
-    // Certifique-se de que todos os textos estão envolvidos por _t para tradução
-    if (isAdditionalContent) {
-        return `
+                if (isAdditionalContent) {
+                    return `
             <div class="additional-info">
                 <h3 class="additional-title"><u>${_t("Collection Points")}</u></h3>
                 ${_t("Our database is the result of a collaboration between private initiatives, the public sector, and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.")}
                 <br><br>
                 <button class="gc-back-btn">${_t("← Back")}</button>
             </div>`;
-    } else {
-        var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(point.latitude + ',' + point.longitude)}`;
-        return `
+                } else {
+                    var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(point.latitude + ',' + point.longitude)}`;
+                    return `
             <div class="gc-info-window-content">
                 <h4><strong><u>${_t(point.name)}</u></strong></h4>
                 <div class="address">${_t(point.street)}, ${point.house_number}, ${_t(point.district)}, ${point.zip}</div>
@@ -192,8 +228,8 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">${_t("🚘 Go now")}</a>
                 <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
             </div>`;
-    }
-}
+                }
+            }
 
             collectionPoints.forEach(function (point) {
                 var pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
@@ -207,9 +243,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                     });
 
                     marker.addListener('click', function () {
-                        var wasteTypeIds = point.waste_type.map(function (type) {
-                            return type[0];
-                        });
+                        var wasteTypeIds = point.waste_type;
                         self.fetchWasteTypeNames(wasteTypeIds).then(function (wasteTypeNames) {
                             var wasteTypeText = wasteTypeNames.map(function (type) {
                                 return type.name;
@@ -263,11 +297,10 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                         return google.maps.geometry.spherical.computeDistanceBetween(pointLocation, self.currentCircle.getCenter()) <= self.currentCircle.getRadius();
                     });
 
-                    var modalBody = $('#collectionPointsModal').find('.modal-body');
-                    modalBody.empty();
+                    self.$modalBody.empty();
 
                     filteredPointsWithinCircle.forEach(function (point) {
-                        modalBody.append(`<p>Name: ${point.name}<br>Address: ${point.street}, ${point.house_number}<br>Description: ${point.description}</p><hr>`);
+                        self.$modalBody.append(`<p>Name: ${point.name}<br>Address: ${point.street}, ${point.house_number}<br>Description: ${point.description}</p><hr>`);
                     });
 
                     $('#collectionPointsModal').modal('show');
