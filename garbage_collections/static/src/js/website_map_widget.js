@@ -36,7 +36,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             return session.rpc('/web/dataset/call_kw', {
                 model: 'ir.config_parameter',
                 method: 'get_param',
-                args: ['google_maps_api_key_garbage_collections'],
+                args: ['google_maps_api_key'],
                 kwargs: {},
             });
         },
@@ -112,34 +112,30 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         currentCircle: null,
         _handleSearch: async function () {
             try {
-                var self = this;
-                var street = $('#street-input').val();
-                var cep = $('#cep-input').val();
-                var number = $('#number-input').val();
-                var address = `${street}, ${number}, ${cep}`;
-                var wasteTypeId = $('#waste-type-select').val();
+                const address = `${$('#street-input').val()}, ${$('#number-input').val()}, ${$('#cep-input').val()}`;
+                const wasteTypeId = $('#waste-type-select').val();
 
-                var location = await this.geocodeAddress(address);
+                const location = await this.geocodeAddress(address);
 
-                self.map.setCenter(location);
-                self.map.setZoom(15);
+                this.map.setCenter(location);
+                this.map.setZoom(15);
 
-                if (self.searchMarker) {
-                    self.searchMarker.setMap(null);
+                if (this.searchMarker) {
+                    this.searchMarker.setMap(null);
                 }
-                self.searchMarker = new google.maps.Marker({
+                this.searchMarker = new google.maps.Marker({
                     position: location,
-                    map: self.map,
+                    map: this.map,
                     title: _t('Location Found')
                 });
 
-                if (self.currentCircle) {
-                    self.currentCircle.setMap(null);
+                if (this.currentCircle) {
+                    this.currentCircle.setMap(null);
                 }
-                var radius = parseInt($('#radius-slider').val()) * 1000;
-                self.currentCircle = new google.maps.Circle({
-                    map: self.map,
-                    radius: radius,
+                const radius = parseInt($('#radius-slider').val()) * 1000;
+                this.currentCircle = new google.maps.Circle({
+                    map: this.map,
+                    radius,
                     center: location,
                     fillColor: '#AA0000',
                     fillOpacity: 0.35,
@@ -148,14 +144,14 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                     strokeWeight: 2
                 });
 
-                self.lastSearchParams = {location: location, wasteTypeId: wasteTypeId};
+                this.lastSearchParams = {location, wasteTypeId};
 
-                var filteredPoints = await self._fetchCollectionPoints(wasteTypeId);
-                self.lastSearchResults = filteredPoints;
-                self._initMap(filteredPoints, location);
+                const filteredPoints = await this._fetchCollectionPoints(wasteTypeId);
+                this.lastSearchResults = filteredPoints;
+                this._initMap(filteredPoints, location);
             } catch (error) {
                 console.error("Geocode or fetching collection points failed:", error);
-                alert(_t('Geocode was not successful for the following reason: ') + error);
+                alert(_t('Geocode was not successful. Please check the address and try again.') + error);
             }
         },
 

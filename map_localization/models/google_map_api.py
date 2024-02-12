@@ -1,4 +1,3 @@
-import werkzeug
 from odoo import models, fields, api
 import googlemaps
 
@@ -49,7 +48,7 @@ class GoogleMapsApi(models.AbstractModel):
     @api.depends("street", "house_number", "district", "zip", "city_id", "state_id")
     def _compute_google_maps_url(self):
         for record in self:
-            config_service = ConfigService()
+            config_service = ConfigService(self.env)
             api_key = config_service.get_google_maps_api_key()
             if not api_key:
                 record.google_maps_url = False

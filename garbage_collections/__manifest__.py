@@ -8,7 +8,6 @@
     "depends": ["map_localization", "website"],
     "data": [
         "security/ir.model.access.csv",
-        "data/google_maps_api_key_garbage_collections.xml",
         "views/assets.xml",
         "views/collection_point_views.xml",
         "views/waste_type_views.xml",
