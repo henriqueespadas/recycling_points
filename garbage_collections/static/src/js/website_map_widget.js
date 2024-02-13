@@ -186,34 +186,83 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         },
 
         _initMap: function (collectionPoints, centerLocation) {
-            var self = this;
+            this.initializeMap(centerLocation);
+            this.addCollectionPointsToMap(collectionPoints);
+            this.adjustMapViewToBounds(centerLocation);
+        },
+
+        initializeMap: function (centerLocation) {
             this.map = new google.maps.Map(document.getElementById('map-container'), {
-                center: {lat: -23.43, lng: -46.59},
+                center: centerLocation || {lat: -23.43, lng: -46.59},
                 zoom: 12
             });
+        },
 
-            var icon = {
+        addCollectionPointsToMap: function (collectionPoints) {
+            const bounds = new google.maps.LatLngBounds();
+            collectionPoints.forEach(point => {
+                const pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
+                if (!this.currentCircle || this.isPointWithinCurrentCircle(pointLocation)) {
+                    const marker = this.createMarkerForPoint(point, pointLocation);
+                    this.attachMarkerClickEvent(marker, point);
+                    bounds.extend(pointLocation);
+                }
+            });
+            if (this.currentCircle) {
+                this.currentCircle.setMap(this.map);
+                bounds.union(this.currentCircle.getBounds());
+            }
+            this.map.fitBounds(bounds);
+        },
+
+        isPointWithinCurrentCircle: function (pointLocation) {
+            return google.maps.geometry.spherical.computeDistanceBetween(pointLocation, this.currentCircle.getCenter()) <= this.currentCircle.getRadius();
+        },
+
+        createMarkerForPoint: function (point, pointLocation) {
+            const icon = {
                 url: '/garbage_collections/static/src/img/marcador.png',
                 scaledSize: new google.maps.Size(60, 60),
                 origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(15, 15)
+                anchor: new google.maps.Point(30, 30)
             };
 
-            var bounds = new google.maps.LatLngBounds();
-            var pointsAdded = 0;
+            const marker = new google.maps.Marker({
+                position: pointLocation,
+                map: this.map,
+                title: point.name,
+                icon: icon
+            });
+            marker.set('point', point);
 
-            function createInfoWindowContent(point, wasteTypeText, isAdditionalContent = false) {
-                if (isAdditionalContent) {
-                    return `
+            return marker;
+        },
+
+        attachMarkerClickEvent: function (marker, point) {
+            marker.addListener('click', () => {
+                this.fetchWasteTypeNames(point.waste_type).then(wasteTypeNames => {
+                    const wasteTypeText = wasteTypeNames.map(type => type.name).join(', ');
+                    marker.set('wasteTypeText', wasteTypeText);
+                    const infoWindowContent = this.createInfoWindowContent(point, wasteTypeText);
+                    this.showInfoWindow(marker, infoWindowContent);
+                }).catch(error => {
+                    console.error("Error fetching waste type names:", error);
+                });
+            });
+        },
+
+        createInfoWindowContent(point, wasteTypeText, isAdditionalContent = false) {
+            if (isAdditionalContent) {
+                return `
             <div class="additional-info">
                 <h3 class="additional-title"><u>${_t("Collection Points")}</u></h3>
                 ${_t("Our database is the result of a collaboration between private initiatives, the public sector, and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.")}
                 <br><br>
                 <button class="gc-back-btn">${_t("← Back")}</button>
             </div>`;
-                } else {
-                    var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(point.latitude + ',' + point.longitude)}`;
-                    return `
+            } else {
+                var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(point.latitude + ',' + point.longitude)}`;
+                return `
             <div class="gc-info-window-content">
                 <h4><strong><u>${_t(point.name)}</u></strong></h4>
                 <div class="address">${_t(point.street)}, ${point.house_number}, ${_t(point.district)}, ${point.zip}</div>
@@ -224,66 +273,52 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">${_t("🚘 Go now")}</a>
                 <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
             </div>`;
-                }
             }
+        },
 
-            collectionPoints.forEach(function (point) {
-                var pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
+        showInfoWindow: function (marker, contentString) {
+            const infoWindow = new google.maps.InfoWindow({content: contentString});
+            infoWindow.open(this.map, marker);
 
-                if (!self.currentCircle || google.maps.geometry.spherical.computeDistanceBetween(pointLocation, self.currentCircle.getCenter()) <= self.currentCircle.getRadius()) {
-                    var marker = new google.maps.Marker({
-                        position: pointLocation,
-                        map: self.map,
-                        title: point.name,
-                        icon: icon
-                    });
+            google.maps.event.addListener(infoWindow, 'domready', () => {
+                const backButton = document.querySelector('.gc-back-btn');
+                if (backButton) {
+                    backButton.addEventListener('click', () => {
+                        const point = marker.get('point');
+                        const wasteTypeText = marker.get('wasteTypeText');
 
-                    marker.addListener('click', function () {
-                        var wasteTypeIds = point.waste_type;
-                        self.fetchWasteTypeNames(wasteTypeIds).then(function (wasteTypeNames) {
-                            var wasteTypeText = wasteTypeNames.map(function (type) {
-                                return type.name;
-                            }).join(', ');
-                            var contentString = createInfoWindowContent(point, wasteTypeText);
-                            var infoWindow = new google.maps.InfoWindow({content: contentString});
-
-                            infoWindow.open(self.map, marker);
-
-                            google.maps.event.addListener(infoWindow, 'domready', function () {
-                                var infoButton = document.querySelector('.gc-info-btn');
-                                var backButton = document.querySelector('.gc-back-btn');
-
-                                if (infoButton) {
-                                    infoButton.addEventListener('click', function () {
-                                        infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, true));
-                                    });
-                                }
-                                if (backButton) {
-                                    backButton.addEventListener('click', function () {
-                                        infoWindow.setContent(createInfoWindowContent(point, wasteTypeText, false));
-                                    });
-                                }
-                            });
-                        }).catch(function (error) {
-                            console.error(_t("Error fetching waste type names:", error));
-                        });
+                        if (point && wasteTypeText) {
+                            infoWindow.setContent(this.createInfoWindowContent(point, wasteTypeText, false));
+                        } else {
+                            console.error('Erro: ponto ou texto do tipo de resíduo não definidos.');
+                        }
                     });
                 }
-                bounds.extend(pointLocation);
+                const infoButton = document.querySelector('.gc-info-btn');
+                if (infoButton) {
+                    infoButton.addEventListener('click', () => {
+                        infoWindow.setContent(this.createInfoWindowContent(marker.get('point'), marker.get('wasteTypeText'), true));
+                    });
+                }
             });
+        },
 
-            if (self.currentCircle) {
-                self.currentCircle.setMap(self.map);
-                bounds.union(self.currentCircle.getBounds());
-            }
 
-            if (!bounds.isEmpty()) {
-                this.map.fitBounds(bounds);
+        adjustMapViewToBounds: function (centerLocation) {
+            if (this.map && this.map.getBounds && typeof this.map.getBounds === 'function') {
+                const bounds = this.map.getBounds();
+                if (bounds && !bounds.isEmpty()) {
+                    this.map.fitBounds(bounds);
+                } else if (centerLocation) {
+                    this.map.setCenter(centerLocation);
+                    this.map.setZoom(15);
+                }
             } else if (centerLocation) {
                 this.map.setCenter(centerLocation);
                 this.map.setZoom(15);
             }
         },
+
         _relistCollectionPoints: function () {
             var self = this;
             if (self.lastSearchParams && self.currentCircle) {
