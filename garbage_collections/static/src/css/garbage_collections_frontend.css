@@ -49,7 +49,7 @@
     flex-shrink: 0;
 }
 
-.gc-info-window-content h4 {
+.gc-info-window-content h2 {
     color: crimson;
     margin-bottom: 10px;
 }
@@ -69,11 +69,12 @@
 .gc-info-window-content .gc-go-now-btn {
     background-color: yellow;
     color: black;
-    padding: 10px;
+    padding: 10px 30px;
     text-decoration: none;
     border-radius: 5px;
     display: inline-block;
     margin-top: 10px;
+    font-size: 20px;
 }
 
 .gc-info-window-content .gc-info-btn {
@@ -81,7 +82,7 @@
     border: none;
     color: crimson;
     padding: 5px;
-    font-size: 20px;
+    font-size: 40px;
     cursor: pointer;
     outline: none;
 }
@@ -99,7 +100,6 @@
     background: none;
     cursor: pointer;
     padding: 5px;
-    font-size: 20px;
     color: crimson;
     outline: none;
 }
@@ -120,20 +120,22 @@
     background-color: #fc045c;
     color: #fff;
     border: none;
-    padding: 10px;
+    padding: 20px;
     box-shadow: none;
 }
 .additional-title{
     color: yellow;
 
 }
-.gm-style {
+#map-container .gm-style {
     background-color: #fc045c;
 
 }
 
-.gm-style .gm-style-iw-c {
-    background-color: white !important;
+#map-container .gm-style .gm-style-iw-c {
     border: none !important;
     box-shadow: none !important;
+    padding: 0;
+    font-weight: bold;
 }
+

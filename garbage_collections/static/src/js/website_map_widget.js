@@ -54,7 +54,6 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             });
         },
 
-
         start: function () {
             var self = this;
             this._super.apply(this, arguments);
@@ -96,7 +95,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             });
         },
 
-        geocodeAddress: function (address) {
+        _geocodeAddress: function (address) {
             return new Promise((resolve, reject) => {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode({'address': address}, function (results, status) {
@@ -109,52 +108,62 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             });
         },
 
-        currentCircle: null,
-        _handleSearch: async function () {
+        async _handleSearch() {
             try {
                 const address = `${$('#street-input').val()}, ${$('#number-input').val()}, ${$('#cep-input').val()}`;
                 const wasteTypeId = $('#waste-type-select').val();
+                const location = await this._geocodeAddress(address);
 
-                const location = await this.geocodeAddress(address);
-
-                this.map.setCenter(location);
-                this.map.setZoom(15);
-
-                if (this.searchMarker) {
-                    this.searchMarker.setMap(null);
-                }
-                this.searchMarker = new google.maps.Marker({
-                    position: location,
-                    map: this.map,
-                    title: _t('Location Found')
-                });
-
-                if (this.currentCircle) {
-                    this.currentCircle.setMap(null);
-                }
-                const radius = parseInt($('#radius-slider').val()) * 1000;
-                this.currentCircle = new google.maps.Circle({
-                    map: this.map,
-                    radius,
-                    center: location,
-                    fillColor: '#AA0000',
-                    fillOpacity: 0.35,
-                    strokeColor: '#AA0000',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2
-                });
+                this._updateMapCenterAndZoom(location);
+                this._replaceSearchMarker(location);
+                this._replaceCurrentCircle(location, $('#radius-slider').val());
 
                 this.lastSearchParams = {location, wasteTypeId};
-
                 const filteredPoints = await this._fetchCollectionPoints(wasteTypeId);
                 this.lastSearchResults = filteredPoints;
                 this._initMap(filteredPoints, location);
             } catch (error) {
-                console.error("Geocode or fetching collection points failed:", error);
-                alert(_t('Geocode was not successful. Please check the address and try again.') + error);
+                this._handleSearchError(error);
             }
         },
 
+        _updateMapCenterAndZoom(location) {
+            this.map.setCenter(location);
+            this.map.setZoom(15);
+        },
+
+        _replaceSearchMarker(location) {
+            if (this.searchMarker) {
+                this.searchMarker.setMap(null);
+            }
+            this.searchMarker = new google.maps.Marker({
+                position: location,
+                map: this.map,
+                title: _t('Location Found')
+            });
+        },
+
+        _replaceCurrentCircle(location, radiusValue) {
+            if (this.currentCircle) {
+                this.currentCircle.setMap(null);
+            }
+            const radius = parseInt(radiusValue) * 1000;
+            this.currentCircle = new google.maps.Circle({
+                map: this.map,
+                radius,
+                center: location,
+                fillColor: '#AA0000',
+                fillOpacity: 0.35,
+                strokeColor: '#AA0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2
+            });
+        },
+
+        _handleSearchError(error) {
+            console.error("Geocode or fetching collection points failed:", error);
+            alert(_t('Geocode was not successful. Please check the address and try again.') + error);
+        },
 
         _loadGoogleMapsAPI: function (apiKey) {
             return new Promise(function (resolve, reject) {
@@ -256,19 +265,19 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 return `
             <div class="additional-info">
                 <h3 class="additional-title"><u>${_t("Collection Points")}</u></h3>
-                ${_t("Our database is the result of a collaboration between private initiatives, the public sector, and third sector organizations. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.")}
+                ${_t("Our database is the result of a collaboration between multiple sources. Updates may take some time to process. We are committed to continually working to keep the platform up to date. Click the button below and learn about the initiative and our partners.")}
                 <br><br>
-                <button class="gc-back-btn">${_t("← Back")}</button>
+                <button class="btn btn-warning ">${_t("← Back")}</button>
             </div>`;
             } else {
                 var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(point.latitude + ',' + point.longitude)}`;
                 return `
             <div class="gc-info-window-content">
-                <h4><strong><u>${_t(point.name)}</u></strong></h4>
+                <h2><strong><u>${_t(point.name)}</u></strong></h2>
                 <div class="address">${_t(point.street)}, ${point.house_number}, ${_t(point.district)}, ${point.zip}</div>
-                <div class="opening-hours"><strong class="highlight">${_t("Opening Hours:")}</strong> <br>${_t(point.opening_hours)}</div>
+                <div class="opening-hours"><strong class="highlight">${_t("Opening Hours: ")}</strong>${_t(point.opening_hours)}</div>
                 <div class="telephone"><strong class="highlight">${_t("Tel:")}</strong> ${point.telephone}</div>
-                <div class="waste-type"><strong class="highlight">${_t("What do we receive:")}</strong> <br>${_t(wasteTypeText)}</div>
+                <div class="waste-type"><strong class="highlight">${_t("What do we receive: ")}</strong>${_t(wasteTypeText)}</div>
                 <div class="description">${_t(point.description)}</div>
                 <a href="${googleMapsUrl}" target="_blank" class="gc-go-now-btn">${_t("🚘 Go now")}</a>
                 <a><i class="fa fa-info-circle gc-info-btn" aria-hidden="true"></i></a>
@@ -277,11 +286,14 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         },
 
         showInfoWindow: function (marker, contentString) {
+            if (this.currentInfoWindow) {
+                this.currentInfoWindow.close();
+            }
             const infoWindow = new google.maps.InfoWindow({content: contentString});
             infoWindow.open(this.map, marker);
-
+            this.currentInfoWindow = infoWindow;
             google.maps.event.addListener(infoWindow, 'domready', () => {
-                const backButton = document.querySelector('.gc-back-btn');
+                const backButton = document.querySelector('.btn-warning');
                 if (backButton) {
                     backButton.addEventListener('click', () => {
                         const point = marker.get('point');
@@ -290,7 +302,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                         if (point && wasteTypeText) {
                             infoWindow.setContent(this.createInfoWindowContent(point, wasteTypeText, false));
                         } else {
-                            console.error('Erro: ponto ou texto do tipo de resíduo não definidos.');
+                            console.error('Error: point or text of the specification type not defined.');
                         }
                     });
                 }
@@ -302,7 +314,6 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 }
             });
         },
-
 
         adjustMapViewToBounds: function (centerLocation) {
             if (this.map && this.map.getBounds && typeof this.map.getBounds === 'function') {
@@ -321,29 +332,32 @@ odoo.define('garbage_collections.MapWidget', function (require) {
 
         _relistCollectionPoints: function () {
             var self = this;
-            if (self.lastSearchParams && self.currentCircle) {
-                self._fetchCollectionPoints(self.lastSearchParams.wasteTypeId).then(function (filteredPoints) {
-                    var filteredPointsWithinCircle = filteredPoints.filter(function (point) {
-                        var pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
-                        return google.maps.geometry.spherical.computeDistanceBetween(pointLocation, self.currentCircle.getCenter()) <= self.currentCircle.getRadius();
-                    });
+            var fetchPoints = function (wasteTypeId) {
+                return self._fetchCollectionPoints(wasteTypeId).then(function (filteredPoints) {
+                    var pointsToDisplay = filteredPoints;
+                    if (self.currentCircle) {
+                        pointsToDisplay = filteredPoints.filter(function (point) {
+                            var pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
+                            return google.maps.geometry.spherical.computeDistanceBetween(pointLocation, self.currentCircle.getCenter()) <= self.currentCircle.getRadius();
+                        });
+                    }
 
                     self.$modalBody.empty();
 
-                    filteredPointsWithinCircle.forEach(function (point) {
+                    pointsToDisplay.forEach(function (point) {
                         self.$modalBody.append(`<p>Name: ${point.name}<br>Address: ${point.street}, ${point.house_number}<br>Description: ${point.description}</p><hr>`);
                     });
 
                     $('#collectionPointsModal').modal('show');
                 });
+            };
+            if (self.lastSearchParams && self.currentCircle) {
+                fetchPoints(self.lastSearchParams.wasteTypeId);
             } else {
-                alert(_t('No previous searches found or circle not defined..'));
+                fetchPoints();
             }
         },
-
-
     });
-
 
     publicWidget.registry.PortalMapWidget = MapWidget;
 
