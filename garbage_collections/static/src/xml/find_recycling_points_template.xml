@@ -14,13 +14,13 @@
                     <div class="search-bar text-center mt4 mb4">
                         <input type="text" id="street-input" placeholder="Enter Street"
                                class="form-control d-inline-block"
-                               style="width: 300px;"/>
+                               />
                         <input type="text" id="cep-input" placeholder="Enter ZIP Code"
                                class="form-control d-inline-block"
-                               style="width: 300px;"/>
+                               />
                         <input type="text" id="number-input" placeholder="Number"
                                class="form-control d-inline-block ml2"
-                               style="width: 100px;"/>
+                               />
                     </div>
                     <div class="search-controls">
                         <select id="waste-type-select" class="form-control">

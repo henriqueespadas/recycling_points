@@ -12,7 +12,6 @@
         "views/collection_point_views.xml",
         "views/waste_type_views.xml",
         "views/menus.xml",
-        "static/src/xml/template_garbage_collections_index.xml",
         "static/src/xml/find_recycling_points_template.xml",
     ],
     "installable": True,

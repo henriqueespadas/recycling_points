@@ -121,7 +121,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:garbage_collections.find_recycling_points_template
 #, python-format
 msgid "Enter Street"
-msgstr "Entrar na rua"
+msgstr "Digite a rua"
 
 #. module: garbage_collections
 #. openerp-web

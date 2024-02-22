@@ -230,7 +230,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
 
         createMarkerForPoint: function (point, pointLocation) {
             const icon = {
-                url: '/garbage_collections/static/src/img/marcador.png',
+                url: '/garbage_collections/static/src/img/pointer.png',
                 scaledSize: new google.maps.Size(60, 60),
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(30, 30)

@@ -138,4 +138,16 @@
     padding: 0;
     font-weight: bold;
 }
+#cep-input{
+    width: 150px;
+}
+#street-input{
+    width: 500px;
+}
+#number-input{
+    width: 100px;
+}
+#waste-type-select{
+    max-width: 250px;
+}
 

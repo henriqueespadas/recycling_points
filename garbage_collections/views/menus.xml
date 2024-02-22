@@ -2,6 +2,17 @@
 
     <menuitem id="menu_garbage_collection_points" name="Collection Points"/>
 
-    <menuitem id="menu_garbage_collection_points_collection_point" name="Collection Points" parent="menu_garbage_collection_points" action="action_collection_point"/>
-    <menuitem id="menu_garbage_collection_points_waste_type" name="Waste Types" parent="menu_garbage_collection_points" action="action_waste_type"/>
+    <menuitem id="menu_garbage_collection_points_collection_point" name="Collection Points"
+              parent="menu_garbage_collection_points" action="action_collection_point"/>
+    <menuitem id="menu_garbage_collection_points_waste_type" name="Waste Types" parent="menu_garbage_collection_points"
+              action="action_waste_type"/>
+
+
+    <record id="menu_garbage_collection_points_website" model="website.menu">
+        <field name="name">Garbage Collections</field>
+        <field name="url">/garbage_collections</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">20</field>
+    </record>
+
 </odoo>
