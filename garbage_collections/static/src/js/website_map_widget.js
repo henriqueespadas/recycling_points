@@ -93,7 +93,57 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             this.$radiusSlider.on('input change', function () {
                 self.$radiusValue.text($(this).val() + ' km');
             });
+
+            $('#find-me-button').click(function () {
+                self._handleFindMe();
+            });
         },
+
+        async _handleFindMe() {
+            if (!navigator.geolocation) {
+                alert(_t('Geolocation is not supported by this browser.'));
+                return;
+            }
+
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+
+                const location = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                this._updateMapCenterAndZoom(location);
+                this._replaceSearchMarker(location);
+
+                try {
+                    const geocoder = new google.maps.Geocoder();
+                    const results = await new Promise((resolve, reject) => {
+                        geocoder.geocode({'location': location}, (results, status) => {
+                            if (status === 'OK') resolve(results);
+                            else reject(status);
+                        });
+                    });
+
+                    if (results[0]) {
+                        const addressComponents = results[0].address_components;
+                        const address = addressComponents.find(component => component.types.includes('route'));
+                        const postalCode = addressComponents.find(component => component.types.includes('postal_code'));
+                        $('#street-input').val(address ? address.long_name : '');
+                        $('#cep-input').val(postalCode ? postalCode.long_name : '');
+                    } else {
+                        window.alert('Nenhum resultado encontrado');
+                    }
+                } catch (error) {
+                    window.alert(`A geocodificação falhou devido a: ${error}`);
+                }
+            } catch (error) {
+                alert(_t('Geolocation is not supported by this browser.'));
+            }
+        },
+
 
         _geocodeAddress: function (address) {
             return new Promise((resolve, reject) => {
@@ -152,7 +202,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 map: this.map,
                 radius,
                 center: location,
-                fillColor: '#AA0000',
+                fillColor: '#ADD8E6',
                 fillOpacity: 0.35,
                 strokeColor: '#AA0000',
                 strokeOpacity: 0.8,
@@ -222,6 +272,14 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                 bounds.union(this.currentCircle.getBounds());
             }
             this.map.fitBounds(bounds);
+
+            if (collectionPoints.length === 1) {
+                const self = this;
+                setTimeout(function () {
+                    self.map.setZoom(17);
+                }, 300);
+            }
+
         },
 
         isPointWithinCurrentCircle: function (pointLocation) {

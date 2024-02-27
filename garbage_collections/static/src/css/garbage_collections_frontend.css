@@ -150,4 +150,19 @@
 #waste-type-select{
     max-width: 250px;
 }
+.input-icon-container {
+    position: relative;
+    display: inline-block;
+}
 
+.icon-input {
+    padding-right: 30px;
+}
+
+.icon-clickable {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}

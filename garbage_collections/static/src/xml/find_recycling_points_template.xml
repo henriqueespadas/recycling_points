@@ -2,7 +2,7 @@
     <template id="find_recycling_points_template" name="Find Recycling Points">
         <t t-call="website.layout">
             <div id="img-background" class="container mt16 mb16 principal"
-                 style="background-image: url('static/src/img/fundo.png');
+                 style="background-image: url('garbage_collections/static/src/img/fundo.png');
                         background-size: cover;
                         background-position: center center;">
                 <div class="seletor_find_recycling_points_template"/>
@@ -12,16 +12,18 @@
                         waste.
                     </p>
                     <div class="search-bar text-center mt4 mb4">
-                        <input type="text" id="street-input" placeholder="Enter Street"
-                               class="form-control d-inline-block"
-                               />
+                        <div class="input-icon-container">
+                            <input type="text" id="street-input" placeholder="Enter Street"
+                                   class="form-control d-inline-block icon-input"/>
+                            <i id="find-me-button"
+                               class="icon-clickable fa fa-bullseye"></i>
+                        </div>
                         <input type="text" id="cep-input" placeholder="Enter ZIP Code"
-                               class="form-control d-inline-block"
-                               />
+                               class="form-control d-inline-block"/>
                         <input type="text" id="number-input" placeholder="Number"
-                               class="form-control d-inline-block ml2"
-                               />
+                               class="form-control d-inline-block ml2"/>
                     </div>
+
                     <div class="search-controls">
                         <select id="waste-type-select" class="form-control">
                             <option value="">Select Waste Type</option>
@@ -44,7 +46,9 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="modalLabel">Garbage Collection</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                                        <span aria-hidden="true">
+                                            <i class="fa fa-times"></i>
+                                        </span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
