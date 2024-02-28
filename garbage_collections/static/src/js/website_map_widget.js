@@ -131,8 +131,10 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                         const addressComponents = results[0].address_components;
                         const address = addressComponents.find(component => component.types.includes('route'));
                         const postalCode = addressComponents.find(component => component.types.includes('postal_code'));
+                        const streetNumber = addressComponents.find(component => component.types.includes('street_number'));
                         $('#street-input').val(address ? address.long_name : '');
                         $('#cep-input').val(postalCode ? postalCode.long_name : '');
+                        $('#number-input').val(streetNumber ? streetNumber.long_name : '');
                     } else {
                         window.alert('Nenhum resultado encontrado');
                     }
@@ -178,8 +180,24 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         },
 
         _updateMapCenterAndZoom(location) {
+            const radiusValue = parseFloat(document.getElementById('radius-value').value);
+            const zoomLevel = this._calculateZoomLevel(radiusValue);
             this.map.setCenter(location);
-            this.map.setZoom(15);
+            this.map.setZoom(zoomLevel);
+        },
+
+        _calculateZoomLevel(radius) {
+            if (radius <= 100) {
+                return 16;
+            } else if (radius <= 500) {
+                return 14;
+            } else if (radius <= 1000) {
+                return 13;
+            } else if (radius <= 5000) {
+                return 12;
+            } else {
+                return 10;
+            }
         },
 
         _replaceSearchMarker(location) {

@@ -8,6 +8,7 @@
     "depends": ["map_localization", "website"],
     "data": [
         "security/ir.model.access.csv",
+        "security/groups.xml",
         "views/assets.xml",
         "views/collection_point_views.xml",
         "views/waste_type_views.xml",

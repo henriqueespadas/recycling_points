@@ -166,3 +166,41 @@
     transform: translateY(-50%);
     cursor: pointer;
 }
+@media (max-width: 480px) {
+    #street-input {
+        width: 250px;
+        padding: 5px;
+        margin: 5px auto;
+    }
+    #zip-input {
+        width: 250px;
+        padding: 5px;
+    }
+    #waste-type-select {
+        width: 250px;
+        padding: 5px;
+        display: block !important;
+        margin: 0 auto;
+    }
+    .search-controls {
+        display: block;
+        padding: 5px;
+    }
+    #radius-slider{
+        width: 250px;
+        display: block;
+        margin: 0 auto;
+    }
+    #radius-value {
+        display: block;
+        text-align: center;
+    }
+    #search-button{
+        margin-right: 15px;
+    }
+    #find-me-button {
+        transform: translateY(-50%) !important;
+    }
+}
+
+
