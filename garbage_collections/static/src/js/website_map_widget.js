@@ -99,51 +99,54 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             });
         },
 
-        async _handleFindMe() {
-            if (!navigator.geolocation) {
+        _handleFindMe: function () {
+            var self = this;
+            this._getCurrentPosition().then(function (location) {
+                self._updateMapCenterAndZoom(location);
+                self._replaceSearchMarker(location);
+                self._reverseGeocode(location);
+            }).catch(function (error) {
                 alert(_t('Geolocation is not supported by this browser.'));
-                return;
-            }
+            });
+        },
 
-            try {
-                const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject);
-                });
-
-                const location = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-
-                this._updateMapCenterAndZoom(location);
-                this._replaceSearchMarker(location);
-
-                try {
-                    const geocoder = new google.maps.Geocoder();
-                    const results = await new Promise((resolve, reject) => {
-                        geocoder.geocode({'location': location}, (results, status) => {
-                            if (status === 'OK') resolve(results);
-                            else reject(status);
+        _getCurrentPosition: function () {
+            return new Promise(function (resolve, reject) {
+                if (!navigator.geolocation) {
+                    reject(_t('Geolocation is not supported by this browser.'));
+                } else {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        resolve({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
                         });
-                    });
-
-                    if (results[0]) {
-                        const addressComponents = results[0].address_components;
-                        const address = addressComponents.find(component => component.types.includes('route'));
-                        const postalCode = addressComponents.find(component => component.types.includes('postal_code'));
-                        const streetNumber = addressComponents.find(component => component.types.includes('street_number'));
-                        $('#street-input').val(address ? address.long_name : '');
-                        $('#cep-input').val(postalCode ? postalCode.long_name : '');
-                        $('#number-input').val(streetNumber ? streetNumber.long_name : '');
-                    } else {
-                        window.alert('Nenhum resultado encontrado');
-                    }
-                } catch (error) {
-                    window.alert(`A geocodificação falhou devido a: ${error}`);
+                    }, reject);
                 }
-            } catch (error) {
-                alert(_t('Geolocation is not supported by this browser.'));
-            }
+            });
+        },
+
+        _reverseGeocode: function (location) {
+            var self = this;
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'location': location}, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    const addressComponents = results[0].address_components;
+                    self._updateAddressFields(addressComponents);
+                } else {
+                    window.alert('Nenhum resultado encontrado');
+                }
+            }).catch(function (error) {
+                window.alert(`A geocodificação falhou devido a: ${error}`);
+            });
+        },
+
+        _updateAddressFields: function (addressComponents) {
+            const address = addressComponents.find(component => component.types.includes('route'));
+            const postalCode = addressComponents.find(component => component.types.includes('postal_code'));
+            const streetNumber = addressComponents.find(component => component.types.includes('street_number'));
+            $('#street-input').val(address ? address.long_name : '');
+            $('#cep-input').val(postalCode ? postalCode.long_name : '');
+            $('#number-input').val(streetNumber ? streetNumber.long_name : '');
         },
 
 
