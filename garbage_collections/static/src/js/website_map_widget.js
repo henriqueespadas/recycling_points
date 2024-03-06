@@ -133,10 +133,10 @@ odoo.define('garbage_collections.MapWidget', function (require) {
                     const addressComponents = results[0].address_components;
                     self._updateAddressFields(addressComponents);
                 } else {
-                    window.alert('Nenhum resultado encontrado');
+                    window.alert('No results found');
                 }
             }).catch(function (error) {
-                window.alert(`A geocodificação falhou devido a: ${error}`);
+                window.alert(`Geocoding failed due to: ${error}`);
             });
         },
 
@@ -164,14 +164,14 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         },
 
         async _handleSearch() {
-            try {
-                const address = `${$('#street-input').val()}, ${$('#number-input').val()}, ${$('#cep-input').val()}`;
-                const wasteTypeId = $('#waste-type-select').val();
-                const location = await this._geocodeAddress(address);
+    try {
+        const address = `${$('#street-input').val()}, ${$('#number-input').val()}, ${$('#cep-input').val()}`;
+        const wasteTypeId = $('#waste-type-select').val();
+        const location = await this._geocodeAddress(address);
 
-                this._updateMapCenterAndZoom(location);
-                this._replaceSearchMarker(location);
-                this._replaceCurrentCircle(location, $('#radius-slider').val());
+        this._updateMapCenterAndZoom(location);
+        this._replaceSearchMarker(location);
+        this._replaceCurrentCircle(location, $('#radius-slider').val());
 
                 this.lastSearchParams = {location, wasteTypeId};
                 const filteredPoints = await this._fetchCollectionPoints(wasteTypeId);
@@ -279,29 +279,36 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         },
 
         addCollectionPointsToMap: function (collectionPoints) {
-            const bounds = new google.maps.LatLngBounds();
-            collectionPoints.forEach(point => {
-                const pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
-                if (!this.currentCircle || this.isPointWithinCurrentCircle(pointLocation)) {
-                    const marker = this.createMarkerForPoint(point, pointLocation);
-                    this.attachMarkerClickEvent(marker, point);
-                    bounds.extend(pointLocation);
+                const bounds = new google.maps.LatLngBounds();
+                let pointsAdded = 0;
+
+                collectionPoints.forEach(point => {
+                    const pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
+                    if (!this.currentCircle || this.isPointWithinCurrentCircle(pointLocation)) {
+                        const marker = this.createMarkerForPoint(point, pointLocation);
+                        this.attachMarkerClickEvent(marker, point);
+                        bounds.extend(pointLocation);
+                        pointsAdded++;
+                    }
+                });
+
+                if (this.currentCircle) {
+                    this.currentCircle.setMap(this.map);
+                    bounds.union(this.currentCircle.getBounds());
                 }
-            });
-            if (this.currentCircle) {
-                this.currentCircle.setMap(this.map);
-                bounds.union(this.currentCircle.getBounds());
-            }
-            this.map.fitBounds(bounds);
+                this.map.fitBounds(bounds);
 
-            if (collectionPoints.length === 1) {
-                const self = this;
-                setTimeout(function () {
-                    self.map.setZoom(17);
-                }, 300);
-            }
+                if (pointsAdded === 0) {
+                    alert(_t('No collection points found within the selected area.'));
+                }
 
-        },
+                if (collectionPoints.length === 1) {
+                    const self = this;
+                    setTimeout(function () {
+                        self.map.setZoom(17);
+                    }, 300);
+                }
+            },
 
         isPointWithinCurrentCircle: function (pointLocation) {
             return google.maps.geometry.spherical.computeDistanceBetween(pointLocation, this.currentCircle.getCenter()) <= this.currentCircle.getRadius();

@@ -5,6 +5,7 @@
     "license": "AGPL-3",
     "summary": "Management features for collection points",
     "author": "Henrique Espadas",
+    "website": "henriqueep@hotmail.com",
     "depends": ["map_localization", "website"],
     "data": [
         "security/ir.model.access.csv",

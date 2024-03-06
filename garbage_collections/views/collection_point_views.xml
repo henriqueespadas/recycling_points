@@ -8,22 +8,26 @@
                 <sheet>
                     <field name="google_maps_url" widget="google_maps"/>
                     <group>
-                        <field name="name"/>
-                        <field name="zip"/>
-                        <field name="street"/>
-                        <field name="house_number"/>
-                        <field name="district"/>
-                        <field name="has_res_city" invisible="1"/>
-                        <field name="city_id" attrs="{'invisible': [('has_res_city', '=', False)]}"/>
-                        <field name="state_id"/>
-                        <field name="telephone"/>
-                        <field name="email"/>
-                        <field name="daily_limit"/>
-                        <field name="opening_hours"/>
-                        <field name="latitude"/>
-                        <field name="longitude"/>
-                        <field name="description"/>
-                        <field name="waste_type"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="zip"/>
+                            <field name="street"/>
+                            <field name="house_number"/>
+                            <field name="district"/>
+                            <field name="has_res_city" invisible="1"/>
+                            <field name="city_id" attrs="{'invisible': [('has_res_city', '=', False)]}"/>
+                            <field name="state_id"/>
+                        </group>
+                        <group>
+                            <field name="telephone"/>
+                            <field name="email"/>
+                            <field name="daily_limit"/>
+                            <field name="opening_hours"/>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                            <field name="description"/>
+                            <field name="waste_type" widget="many2many_tags"/>
+                        </group>
                     </group>
                 </sheet>
             </form>
