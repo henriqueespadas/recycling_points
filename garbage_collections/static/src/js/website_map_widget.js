@@ -164,14 +164,26 @@ odoo.define('garbage_collections.MapWidget', function (require) {
         },
 
         async _handleSearch() {
-    try {
-        const address = `${$('#street-input').val()}, ${$('#number-input').val()}, ${$('#cep-input').val()}`;
-        const wasteTypeId = $('#waste-type-select').val();
-        const location = await this._geocodeAddress(address);
+            try {
+                const street = $('#street-input').val().trim();
+                const number = $('#number-input').val().trim();
+                const cep = $('#cep-input').val().trim();
 
-        this._updateMapCenterAndZoom(location);
-        this._replaceSearchMarker(location);
-        this._replaceCurrentCircle(location, $('#radius-slider').val());
+                if (!street || !number || !cep) {
+                    alert('Please fill in all address fields.');
+                    return;
+                }
+
+                const address = `${street}, ${number}, ${cep}`;
+                const wasteTypeId = $('#waste-type-select').val();
+                const radius = $('#radius-slider').val();
+
+                const location = await this._geocodeAddress(address);
+                if (!location) throw new Error('Location not found');
+
+                this._updateMapCenterAndZoom(location);
+                this._replaceSearchMarker(location);
+                this._replaceCurrentCircle(location, radius);
 
                 this.lastSearchParams = {location, wasteTypeId};
                 const filteredPoints = await this._fetchCollectionPoints(wasteTypeId);
@@ -199,7 +211,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             } else if (radius <= 5000) {
                 return 12;
             } else {
-                return 10;
+                return 15;
             }
         },
 
@@ -278,37 +290,49 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             });
         },
 
-        addCollectionPointsToMap: function (collectionPoints) {
-                const bounds = new google.maps.LatLngBounds();
-                let pointsAdded = 0;
+        addCollectionPointsToMap(collectionPoints) {
+            const {bounds, pointsAdded} = this.calculateBoundsForCollectionPoints(collectionPoints);
+            this.updateMapBounds(bounds, pointsAdded);
+            this.handleMapZoomForSinglePoint(collectionPoints);
+        },
 
-                collectionPoints.forEach(point => {
-                    const pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
-                    if (!this.currentCircle || this.isPointWithinCurrentCircle(pointLocation)) {
-                        const marker = this.createMarkerForPoint(point, pointLocation);
-                        this.attachMarkerClickEvent(marker, point);
-                        bounds.extend(pointLocation);
-                        pointsAdded++;
-                    }
-                });
+        calculateBoundsForCollectionPoints(collectionPoints) {
+            const bounds = new google.maps.LatLngBounds();
+            let pointsAdded = 0;
 
-                if (this.currentCircle) {
-                    this.currentCircle.setMap(this.map);
-                    bounds.union(this.currentCircle.getBounds());
+            collectionPoints.forEach(point => {
+                const pointLocation = new google.maps.LatLng(point.latitude, point.longitude);
+                if (!this.currentCircle || this.isPointWithinCurrentCircle(pointLocation)) {
+                    const marker = this.createMarkerForPoint(point, pointLocation);
+                    this.attachMarkerClickEvent(marker, point);
+                    bounds.extend(pointLocation);
+                    pointsAdded++;
                 }
-                this.map.fitBounds(bounds);
+            });
 
-                if (pointsAdded === 0) {
-                    alert(_t('No collection points found within the selected area.'));
-                }
+            if (this.currentCircle) {
+                this.currentCircle.setMap(this.map);
+                bounds.union(this.currentCircle.getBounds());
+            }
+            return {bounds, pointsAdded};
+        },
 
-                if (collectionPoints.length === 1) {
-                    const self = this;
-                    setTimeout(function () {
-                        self.map.setZoom(17);
-                    }, 300);
-                }
-            },
+        updateMapBounds(bounds, pointsAdded) {
+            this.map.fitBounds(bounds);
+            if (pointsAdded === 0) {
+                this.displayNoPointsAlert();
+            }
+        },
+
+        handleMapZoomForSinglePoint(collectionPoints) {
+            if (collectionPoints.length === 1) {
+                setTimeout(() => this.map.setZoom(17), 300);
+            }
+        },
+
+        displayNoPointsAlert() {
+            alert(_t('No collection points found within the selected area.'));
+        },
 
         isPointWithinCurrentCircle: function (pointLocation) {
             return google.maps.geometry.spherical.computeDistanceBetween(pointLocation, this.currentCircle.getCenter()) <= this.currentCircle.getRadius();
@@ -371,7 +395,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             }
         },
 
-        showInfoWindow: function (marker, contentString) {
+        showInfoWindow(marker, contentString) {
             if (this.currentInfoWindow) {
                 this.currentInfoWindow.close();
             }
@@ -379,26 +403,37 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             infoWindow.open(this.map, marker);
             this.currentInfoWindow = infoWindow;
             google.maps.event.addListener(infoWindow, 'domready', () => {
-                const backButton = document.querySelector('.btn-warning');
-                if (backButton) {
-                    backButton.addEventListener('click', () => {
-                        const point = marker.get('point');
-                        const wasteTypeText = marker.get('wasteTypeText');
-
-                        if (point && wasteTypeText) {
-                            infoWindow.setContent(this.createInfoWindowContent(point, wasteTypeText, false));
-                        } else {
-                            console.error('Error: point or text of the specification type not defined.');
-                        }
-                    });
-                }
-                const infoButton = document.querySelector('.gc-info-btn');
-                if (infoButton) {
-                    infoButton.addEventListener('click', () => {
-                        infoWindow.setContent(this.createInfoWindowContent(marker.get('point'), marker.get('wasteTypeText'), true));
-                    });
-                }
+                this.setupInfoWindowButtons(marker, infoWindow);
             });
+        },
+
+        setupInfoWindowButtons(marker, infoWindow) {
+            const backButton = document.querySelector('.btn-warning');
+            if (backButton) {
+                backButton.onclick = () => this.handleBackButtonClick(marker, infoWindow);
+            }
+
+            const infoButton = document.querySelector('.gc-info-btn');
+            if (infoButton) {
+                infoButton.onclick = () => this.handleInfoButtonClick(marker, infoWindow);
+            }
+        },
+
+        handleBackButtonClick(marker, infoWindow) {
+            const point = marker.get('point');
+            const wasteTypeText = marker.get('wasteTypeText');
+
+            if (point && wasteTypeText) {
+                infoWindow.setContent(this.createInfoWindowContent(point, wasteTypeText, false));
+            } else {
+                console.error('Error: point or text of the specification type not defined.');
+            }
+        },
+
+        handleInfoButtonClick(marker, infoWindow) {
+            const point = marker.get('point');
+            const wasteTypeText = marker.get('wasteTypeText');
+            infoWindow.setContent(this.createInfoWindowContent(point, wasteTypeText, true));
         },
 
         adjustMapViewToBounds: function (centerLocation) {
