@@ -1,8 +1,8 @@
 <odoo>
 
     <record model="ir.module.category" id="garbabe_collections_category">
-        <field name="name">Garbage Collections</field>
-        <field name="description">Garbage Collections Groups</field>
+        <field name="name">Recycling Points</field>
+        <field name="description">Recycling PointsGroups</field>
         <field name="sequence">160</field>
     </record>
 

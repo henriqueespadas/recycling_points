@@ -1,0 +1,19 @@
+<odoo>
+
+    <menuitem id="menu_recycling_points" name="Collection Points" groups="recycling_points.group_find_recycling_points_admin"
+              sequence="10"/>
+
+    <menuitem id="menu_recycling_points_collection_point" name="Collection Points"
+              parent="menu_recycling_points" action="action_collection_point"/>
+    <menuitem id="menu_recycling_points_waste_type" name="Waste Types" parent="menu_recycling_points"
+              action="action_waste_type"/>
+
+
+    <record id="menu_recycling_points_website" model="website.menu">
+        <field name="name">Recycling Points</field>
+        <field name="url">/recycling_points</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">20</field>
+    </record>
+
+</odoo>

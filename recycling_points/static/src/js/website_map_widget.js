@@ -1,4 +1,4 @@
-odoo.define('garbage_collections.MapWidget', function (require) {
+odoo.define('recycling_points.MapWidget', function (require) {
     'use strict';
 
     var publicWidget = require('web.public.widget');
@@ -8,7 +8,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
 
     var MapWidget = publicWidget.Widget.extend({
         selector: '.seletor_find_recycling_points_template',
-        xmlDependencies: ['/garbage_collection/static/src/xml/find_recycling_points_template.xml'],
+        xmlDependencies: ['/recyling_points/static/src/xml/find_recycling_points_template.xml'],
 
         initializeSelectors: function () {
             this.$listPointsButton = $('#listPointsButton');
@@ -281,6 +281,18 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             this.initializeMap(centerLocation);
             this.addCollectionPointsToMap(collectionPoints);
             this.adjustMapViewToBounds(centerLocation);
+            this.addCentralMarker(centerLocation);
+        },
+
+        addCentralMarker: function (centerLocation) {
+            if (this.centralMarker) {
+                this.centralMarker.setMap(null);
+            }
+            this.centralMarker = new google.maps.Marker({
+                position: centerLocation,
+                map: this.map,
+                title: 'Central Location'
+            });
         },
 
         initializeMap: function (centerLocation) {
@@ -340,7 +352,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
 
         createMarkerForPoint: function (point, pointLocation) {
             const icon = {
-                url: '/garbage_collections/static/src/img/pointer.png',
+                url: '/recycling_points/static/src/img/pointer.png',
                 scaledSize: new google.maps.Size(60, 60),
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(30, 30)
@@ -402,6 +414,7 @@ odoo.define('garbage_collections.MapWidget', function (require) {
             const infoWindow = new google.maps.InfoWindow({content: contentString});
             infoWindow.open(this.map, marker);
             this.currentInfoWindow = infoWindow;
+
             google.maps.event.addListener(infoWindow, 'domready', () => {
                 this.setupInfoWindowButtons(marker, infoWindow);
             });

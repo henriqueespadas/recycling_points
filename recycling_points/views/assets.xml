@@ -1,0 +1,9 @@
+<odoo>
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Recycling Points Assets">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css"
+                  href="/recycling_points/static/src/css/recycling_points_frontend.css"/>
+            <script type="text/javascript" src="/recycling_points/static/src/js/website_map_widget.js"/>
+        </xpath>
+    </template>
+</odoo>

@@ -2,7 +2,7 @@
     <template id="find_recycling_points_template" name="Find Recycling Points">
         <t t-call="website.layout">
             <div id="img-background" class="container mt16 mb16 principal"
-                 style="background-image: url('garbage_collections/static/src/img/fundo.png');
+                 style="background-image: url('recycling_points/static/src/img/fundo.png');
                         background-size: cover;
                         background-position: center center;">
                 <div class="seletor_find_recycling_points_template"/>
@@ -41,7 +41,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel">Garbage Collection</h5>
+                                    <h5 class="modal-title" id="modalLabel">Recycling Points</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">
                                             <i class="fa fa-times"></i>
