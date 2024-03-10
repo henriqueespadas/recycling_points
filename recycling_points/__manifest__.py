@@ -1,6 +1,6 @@
 {
     "name": "Collection Points",
-    "version": "0.0",
+    "version": "1.0",
     "category": "Operations/Environment",
     "license": "AGPL-3",
     "summary": "Management features for collection points",
@@ -13,6 +13,7 @@
         "views/assets.xml",
         "views/collection_point_views.xml",
         "views/waste_type_views.xml",
+        "views/res_config_settings.xml",
         "views/menus.xml",
         "static/src/xml/find_recycling_points_template.xml",
     ],

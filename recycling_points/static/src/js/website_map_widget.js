@@ -338,7 +338,7 @@ odoo.define('recycling_points.MapWidget', function (require) {
 
         handleMapZoomForSinglePoint(collectionPoints) {
             if (collectionPoints.length === 1) {
-                setTimeout(() => this.map.setZoom(17), 300);
+                setTimeout(() => this.map.setZoom(13), 300);
             }
         },
 
@@ -376,7 +376,7 @@ odoo.define('recycling_points.MapWidget', function (require) {
                     marker.set('wasteTypeText', wasteTypeText);
                     const infoWindowContent = this.createInfoWindowContent(point, wasteTypeText);
                     this.showInfoWindow(marker, infoWindowContent);
-                }).catch(error => {
+                }).catch(error => {100
                     console.error("Error fetching waste type names:", error);
                 });
             });

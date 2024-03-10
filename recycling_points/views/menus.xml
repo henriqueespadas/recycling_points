@@ -1,13 +1,23 @@
 <odoo>
 
-    <menuitem id="menu_recycling_points" name="Collection Points" groups="recycling_points.group_find_recycling_points_admin"
+    <menuitem id="menu_recycling_points" name="Collection Points"
+              groups="recycling_points.group_find_recycling_points_admin"
               sequence="10"/>
 
     <menuitem id="menu_recycling_points_collection_point" name="Collection Points"
               parent="menu_recycling_points" action="action_collection_point"/>
     <menuitem id="menu_recycling_points_waste_type" name="Waste Types" parent="menu_recycling_points"
               action="action_waste_type"/>
-
+    <menuitem id="menu_recycling_points_config_settings"
+              name="Settings"
+              parent="menu_recycling_points"
+              sequence="10"
+              groups="base.group_system"/>
+    <menuitem id="menu_recycling_points_config_google_api_settings"
+              name="Google API Key"
+              parent="menu_recycling_points_config_settings"
+              sequence="10"
+              action="action_map_localization_configuration"/>
 
     <record id="menu_recycling_points_website" model="website.menu">
         <field name="name">Recycling Points</field>
