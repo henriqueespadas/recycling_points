@@ -1,12 +1,13 @@
 {
-    "name": "Collection Points",
+    "name": "Recycling Points",
     "version": "1.0",
     "category": "Operations/Environment",
     "license": "AGPL-3",
-    "summary": "Management features for collection points",
+    "summary": "Management features for recycling points",
     "author": "Henrique Espadas",
     "website": "henriqueep@hotmail.com",
     "depends": ["map_localization", "website"],
+    'images': ['static/description/main_screenshot.png'],
     "data": [
         "security/ir.model.access.csv",
         "security/groups.xml",
@@ -17,6 +18,10 @@
         "views/menus.xml",
         "static/src/xml/find_recycling_points_template.xml",
     ],
+    "demo":
+        [
+            "data/recycling_points_data.xml",
+        ],
     "installable": True,
     "application": True,
     "auto_install": False,

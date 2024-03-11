@@ -1,0 +1,194 @@
+<odoo>
+    <data>
+        <record id="waste_type_paper" model="waste.type">
+            <field name="name">Paper</field>
+            <field name="description">Paper waste including newspapers, magazines, and office paper.</field>
+        </record>
+        <record id="waste_type_plastic" model="waste.type">
+            <field name="name">Plastic</field>
+            <field name="description">Plastic waste including bottles, packaging, and bags.</field>
+        </record>
+        <record id="waste_type_glass" model="waste.type">
+            <field name="name">Glass</field>
+            <field name="description">Glass waste including bottles and jars.</field>
+        </record>
+        <record id="waste_type_metal" model="waste.type">
+            <field name="name">Metal</field>
+            <field name="description">Metal waste including cans, tins, and foil.</field>
+        </record>
+        <record id="waste_type_organic" model="waste.type">
+            <field name="name">Organic</field>
+            <field name="description">Organic waste including food scraps and yard waste.</field>
+        </record>
+        <record id="waste_type_e_waste" model="waste.type">
+            <field name="name">E-Waste</field>
+            <field name="description">Electronic waste including computers, TVs, and mobile phones.</field>
+        </record>
+        <record id="waste_type_textiles" model="waste.type">
+            <field name="name">Textiles</field>
+            <field name="description">Textile waste including clothes, fabrics, and towels.</field>
+        </record>
+
+        <record id="collection_point_1" model="collection.point">
+            <field name="name">North Zone Recycle Center 1</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_paper')])]"/>
+            <field name="telephone">+551132215678</field>
+            <field name="zip">02012-000</field>
+            <field name="street">Rua Voluntários da Pátria</field>
+            <field name="district">Santana</field>
+            <field name="house_number">1234</field>
+            <field name="email">contact@nzrecycle1.com.br</field>
+            <field name="opening_hours">Mon-Fri 8:00-18:00</field>
+            <field name="description">Collection and recycling of paper products.</field>
+        </record>
+        <record id="collection_point_2" model="collection.point">
+            <field name="name">North Zone Recycle Center 2</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_plastic')])]"/>
+            <field name="telephone">+551132215679</field>
+            <field name="zip">02235-001</field>
+            <field name="street">Avenida Engenheiro Caetano Álvares</field>
+            <field name="district">Imirim</field>
+            <field name="house_number">2500</field>
+            <field name="email">contact@nzrecycle2.com.br</field>
+            <field name="opening_hours">Mon-Fri 9:00-17:00</field>
+            <field name="description">Plastic materials collection and recycling service.</field>
+        </record>
+        <record id="collection_point_3" model="collection.point">
+            <field name="name">North Zone Recycle Center 3</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_glass')])]"/>
+            <field name="telephone">+551132215680</field>
+            <field name="zip">02403-000</field>
+            <field name="street">Rua Conselheiro Moreira de Barros</field>
+            <field name="district">Lauzane Paulista</field>
+            <field name="house_number">1500</field>
+            <field name="email">contact@nzrecycle3.com.br</field>
+            <field name="opening_hours">Mon-Sat 8:00-16:00</field>
+            <field name="description">Dedicated to collecting and recycling glass.</field>
+        </record>
+        <record id="collection_point_4" model="collection.point">
+            <field name="name">North Zone Recycle Center 4</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_metal')])]"/>
+            <field name="telephone">+551132215681</field>
+            <field name="zip">02516-050</field>
+            <field name="street">Avenida Deputado Emílio Carlos</field>
+            <field name="district">Vila Nova Cachoeirinha</field>
+            <field name="house_number">780</field>
+            <field name="email">contact@nzrecycle4.com.br</field>
+            <field name="opening_hours">Mon-Fri 8:00-17:00; Sat 8:00-12:00</field>
+            <field name="description">Metal recycling services, including ferrous and non-ferrous metals.</field>
+        </record>
+        <record id="collection_point_5" model="collection.point">
+            <field name="name">North Zone Recycle Center 5</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_organic')])]"/>
+            <field name="telephone">+551132215682</field>
+            <field name="zip">02614-000</field>
+            <field name="street">Avenida Santa Inês</field>
+            <field name="district">Mandaqui</field>
+            <field name="house_number">1080</field>
+            <field name="email">contact@nzrecycle5.com.br</field>
+            <field name="opening_hours">Mon-Fri 9:00-17:00</field>
+            <field name="description">Organic waste recycling, focusing on composting and other sustainable practices.
+            </field>
+        </record>
+        <record id="collection_point_6" model="collection.point">
+            <field name="name">North Zone Recycle Center 6</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_e_waste')])]"/>
+            <field name="telephone">+551132215683</field>
+            <field name="zip">02728-000</field>
+            <field name="street">Rua Parapuã</field>
+            <field name="district">Freguesia do Ó</field>
+            <field name="house_number">1499</field>
+            <field name="email">contact@nzrecycle6.com.br</field>
+            <field name="opening_hours">Tue-Fri 10:00-18:00; Sat 9:00-13:00</field>
+            <field name="description">Specialized in e-waste recycling, handling electronics and electrical items
+                responsibly.
+            </field>
+        </record>
+        <record id="collection_point_7" model="collection.point">
+            <field name="name">North Zone Recycle Center 7</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_textiles')])]"/>
+            <field name="telephone">+551132215684</field>
+            <field name="zip">02842-000</field>
+            <field name="street">Estrada do Sabão</field>
+            <field name="district">São Domingos</field>
+            <field name="house_number">760</field>
+            <field name="email">contact@nzrecycle7.com.br</field>
+            <field name="opening_hours">Mon-Wed 8:00-16:00; Thu-Fri 8:00-17:00</field>
+            <field name="description">Collecting and recycling textiles, including clothing, fabrics, and more for
+                sustainable reuse.
+            </field>
+        </record>
+        <record id="collection_point_8" model="collection.point">
+            <field name="name">North Zone Recycle Center 8</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_metal'), ref('waste_type_plastic')])]"/>
+            <field name="telephone">+551132215685</field>
+            <field name="zip">02936-000</field>
+            <field name="street">Avenida Raimundo Pereira de Magalhães</field>
+            <field name="district">Pirituba</field>
+            <field name="house_number">1720</field>
+            <field name="email">contact@nzrecycle8.com.br</field>
+            <field name="opening_hours">Mon-Fri 7:00-19:00</field>
+            <field name="description">Offering recycling services for both metals and plastics, providing a
+                comprehensive recycling solution.
+            </field>
+        </record>
+
+        <record id="collection_point_9" model="collection.point">
+            <field name="name">North Zone Recycle Center 9</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_paper'), ref('waste_type_glass')])]"/>
+            <field name="telephone">+551132215686</field>
+            <field name="zip">02945-000</field>
+            <field name="street">Avenida Mutinga</field>
+            <field name="district">Pirituba</field>
+            <field name="house_number">2024</field>
+            <field name="email">contact@nzrecycle9.com.br</field>
+            <field name="opening_hours">Mon-Sat 8:00-17:00</field>
+            <field name="description">Focused on recycling paper and glass, aiming for sustainable waste management.
+            </field>
+        </record>
+        <record id="collection_point_10" model="collection.point">
+            <field name="name">North Zone Recycle Center 10</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_organic')])]"/>
+            <field name="telephone">+551132215687</field>
+            <field name="zip">02995-000</field>
+            <field name="street">Rua Bonifácio Cubas</field>
+            <field name="district">Freguesia do Ó</field>
+            <field name="house_number">409</field>
+            <field name="email">contact@nzrecycle10.com.br</field>
+            <field name="opening_hours">Mon-Fri 9:00-18:00</field>
+            <field name="description">Dedicated to organic waste recycling, promoting composting and environmental
+                sustainability.
+            </field>
+        </record>
+        <record id="collection_point_11" model="collection.point">
+            <field name="name">North Zone Recycle Center 11</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_e_waste'), ref('waste_type_metal')])]"/>
+            <field name="telephone">+551132215688</field>
+            <field name="zip">03089-000</field>
+            <field name="street">Avenida Celso Garcia</field>
+            <field name="district">Tatuapé</field>
+            <field name="house_number">3177</field>
+            <field name="email">contact@nzrecycle11.com.br</field>
+            <field name="opening_hours">Mon-Fri 10:00-19:00; Sat 10:00-14:00</field>
+            <field name="description">Providing e-waste and metal recycling, helping to reduce environmental impact from
+                electronic and metal waste.
+            </field>
+        </record>
+        <record id="collection_point_12" model="collection.point">
+            <field name="name">North Zone Recycle Center 12</field>
+            <field name="waste_type" eval="[(6, 0, [ref('waste_type_textiles'), ref('waste_type_plastic')])]"/>
+            <field name="telephone">+551132215689</field>
+            <field name="zip">03176-000</field>
+            <field name="street">Rua da Mooca</field>
+            <field name="district">Mooca</field>
+            <field name="house_number">2459</field>
+            <field name="email">contact@nzrecycle12.com.br</field>
+            <field name="opening_hours">Mon-Sat 7:00-16:00</field>
+            <field name="description">Specializes in recycling textiles and plastics, focusing on sustainable practices
+                and waste reduction.
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

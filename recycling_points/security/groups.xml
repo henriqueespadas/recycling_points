@@ -2,12 +2,24 @@
 
     <record model="ir.module.category" id="garbabe_collections_category">
         <field name="name">Recycling Points</field>
-        <field name="description">Recycling PointsGroups</field>
-        <field name="sequence">160</field>
+        <field name="description">Recycling Points Groups</field>
+        <field name="sequence">100</field>
+    </record>
+
+    <record model="ir.module.category" id="recycling_points_category">
+        <field name="name">Recycling Points</field>
+        <field name="parent_id" ref="garbabe_collections_category"/>
+    </record>
+
+    <record id="group_find_recycling_points_user" model="res.groups">
+        <field name="name">Find Recycling Points User</field>
+        <field name="category_id" ref="recycling_points_category"/>
     </record>
 
     <record id="group_find_recycling_points_admin" model="res.groups">
         <field name="name">Find Recycling Points Admin</field>
+        <field name="category_id" ref="recycling_points_category"/>
+        <field name="implied_ids" eval="[(4, ref('group_find_recycling_points_user'))]"/>
     </record>
 
 </odoo>
