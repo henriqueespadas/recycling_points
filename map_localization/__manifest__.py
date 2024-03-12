@@ -1,10 +1,12 @@
 {
     "name": "Google Maps API",
+    "description": "Google Maps API integration for Odoo",
     "version": "1.0",
     "category": "Operations/Environment",
     "license": "AGPL-3",
     "summary": "Google Maps API integration for Odoo",
     "author": "Henrique Espadas",
+    "contributors": "Henrique Espadas",
     "website": "henriqueep@hotmail.com",
     "depends": [],
     "data": [

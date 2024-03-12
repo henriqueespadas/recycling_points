@@ -1,10 +1,11 @@
 {
     "name": "Recycling Points",
     "version": "1.0",
-    "category": "Operations/Environment",
+    "category": "Extra Tools",
     "license": "AGPL-3",
     "summary": "Management features for recycling points",
     "author": "Henrique Espadas",
+    "contributors": "Henrique Espadas",
     "website": "henriqueep@hotmail.com",
     "depends": ["map_localization", "website"],
     'images': ['static/description/main_screenshot.png'],
