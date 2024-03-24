@@ -11,6 +11,7 @@
     "depends": [],
     'images': ['static/description/main_screenshot.png'],
     "data": [
+        "security/ir.model.access.csv",
         "data/google_maps_api_key.xml",
         "views/res_config_settings.xml",
         "views/assets.xml",
