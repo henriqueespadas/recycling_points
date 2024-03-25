@@ -41,11 +41,9 @@ class GoogleMapsApi(models.AbstractModel):
 
     @api.depends("city_id")
     def _compute_has_res_city(self):
-        print('AAAAAa')
         self.has_res_city = (
             self.env["ir.model"].search_count([("model", "=", "res.city")]) > 0
         )
-        print(self.env["ir.model"].search_count([("model", "=", "res.city")]))
 
     @api.depends("street", "number", "district", "zip", "city_id", "state_id")
     def _compute_google_maps_url(self):
