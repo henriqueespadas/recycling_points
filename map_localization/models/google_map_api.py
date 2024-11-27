@@ -16,13 +16,11 @@ class GoogleMapsApi(models.AbstractModel):
     district = fields.Char(string="District")
     zip = fields.Char(string="Postal Code")
     additional_info = fields.Char(string="Additional Info")
-    city_id = fields.Many2one("res.city", string="City")
     state_id = fields.Many2one("res.country.state", string="State")
     country_id = fields.Char(string="Country")
     google_maps_url = fields.Char(
         string="Google Maps URL", compute="_compute_google_maps_url"
     )
-    has_res_city = fields.Boolean(compute="_compute_has_res_city", store=False)
     latitude = fields.Float(
         "Latitude", compute="_compute_lat_lng", readonly=True, store=True
     )
@@ -30,7 +28,7 @@ class GoogleMapsApi(models.AbstractModel):
         "Longitude", compute="_compute_lat_lng", readonly=True, store=True
     )
 
-    @api.depends("street", "number", "district", "zip", "city_id", "state_id")
+    @api.depends("street", "number", "district", "zip", "state_id")
     def _compute_lat_lng(self):
         for record in self:
             lat, lng = record.geocode_function(
@@ -39,13 +37,7 @@ class GoogleMapsApi(models.AbstractModel):
             record.latitude = lat
             record.longitude = lng
 
-    @api.depends("city_id")
-    def _compute_has_res_city(self):
-        self.has_res_city = (
-            self.env["ir.model"].search_count([("model", "=", "res.city")]) > 0
-        )
-
-    @api.depends("street", "number", "district", "zip", "city_id", "state_id")
+    @api.depends("street", "number", "district", "zip", "state_id")
     def _compute_google_maps_url(self):
         for record in self:
             config_service = ConfigService(self.env)
@@ -59,7 +51,6 @@ class GoogleMapsApi(models.AbstractModel):
                 record.number,
                 record.district,
                 record.zip,
-                record.city_id.name if record.city_id else None,
                 record.state_id.name if record.state_id else None,
             ]
 
