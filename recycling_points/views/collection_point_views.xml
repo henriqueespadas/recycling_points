@@ -12,10 +12,8 @@
                             <field name="name"/>
                             <field name="zip"/>
                             <field name="street"/>
-                            <field name="house_number"/>
+                            <field name="number"/>
                             <field name="district"/>
-                            <field name="has_res_city" invisible="1"/>
-                            <field name="city_id" attrs="{'invisible': [('has_res_city', '=', False)]}"/>
                             <field name="state_id"/>
                         </group>
                         <group>

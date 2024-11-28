@@ -270,7 +270,7 @@ odoo.define('recycling_points.MapWidget', function (require) {
                 method: 'search_read',
                 args: [],
                 kwargs: {
-                    fields: ['street', 'house_number', 'zip', 'latitude', 'longitude', 'waste_type', 'name', 'opening_hours', 'district', 'telephone', 'description'],
+                    fields: ['street', 'number', 'zip', 'latitude', 'longitude', 'waste_type', 'name', 'opening_hours', 'district', 'telephone', 'description'],
                     domain: domain,
                     context: session.user_context,
                 }
@@ -396,7 +396,7 @@ odoo.define('recycling_points.MapWidget', function (require) {
                 return `
             <div class="gc-info-window-content">
                 <h2><strong><u>${_t(point.name)}</u></strong></h2>
-                <div class="address">${_t(point.street)}, ${point.house_number}, ${_t(point.district)}, ${point.zip}</div>
+                <div class="address">${_t(point.street)}, ${point.number}, ${_t(point.district)}, ${point.zip}</div>
                 <div class="opening-hours"><strong class="highlight">${_t("Opening Hours: ")}</strong>${_t(point.opening_hours)}</div>
                 <div class="telephone"><strong class="highlight">${_t("Tel:")}</strong> ${point.telephone}</div>
                 <div class="waste-type"><strong class="highlight">${_t("What do we receive: ")}</strong>${_t(wasteTypeText)}</div>
@@ -479,7 +479,7 @@ odoo.define('recycling_points.MapWidget', function (require) {
                     self.$modalBody.empty();
 
                     pointsToDisplay.forEach(function (point) {
-                        self.$modalBody.append(`<p>Name: ${point.name}<br>Address: ${point.street}, ${point.house_number}<br>Description: ${point.description}</p><hr>`);
+                        self.$modalBody.append(`<p>Name: ${point.name}<br>Address: ${point.street}, ${point.number}<br>Description: ${point.description}</p><hr>`);
                     });
 
                     $('#collectionPointsModal').modal('show');
